@@ -5,6 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Event;
 import commons.Participant;
+import commons.Expense;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -43,6 +44,7 @@ public class EventPageCtrl {
     private MainCtrl mainCtrl;
     private LanguageConf languageConf;
     private Event event;
+    private Expense expense;
 
     /**
      * @param server   server utils injection
@@ -136,7 +138,7 @@ public class EventPageCtrl {
 
     @FXML
     private void addExpenseClicked() {
-
+        mainCtrl.showAddExpensePage(expense);
     }
 
 

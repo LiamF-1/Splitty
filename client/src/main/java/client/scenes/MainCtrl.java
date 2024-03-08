@@ -18,6 +18,7 @@ package client.scenes;
 import client.utils.LanguageConf;
 import client.utils.UserConfig;
 import commons.Event;
+import commons.Expense;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -38,7 +39,9 @@ public class MainCtrl {
     private Scene eventPage;
 
     private EditParticipantsCtrl editParticipantsCtrl;
+    private AddExpenseCtrl addExpenseCtrl;
     private Scene editParticipants;
+    private Scene addExpense;
     private UserConfig userConfig;
 
     /**
@@ -51,6 +54,7 @@ public class MainCtrl {
      * @param eventPage controller and scene for eventpage
      * @param adminLogin admin login controller and scene
      * @param editParticipantsPage controller and scene for editParticipants
+     * @param addExpensePage controller and scene for addExpense
      * */
     public void initialize(
             Stage primaryStage,
@@ -59,7 +63,8 @@ public class MainCtrl {
             Pair<StartScreenCtrl, Parent> startScreen,
             Pair<EventPageCtrl, Parent> eventPage,
             Pair<AdminLoginCtrl, Parent> adminLogin,
-            Pair<EditParticipantsCtrl, Parent> editParticipantsPage
+            Pair<EditParticipantsCtrl, Parent> editParticipantsPage,
+            Pair<AddExpenseCtrl, Parent> addExpensePage
     ) {
 
         this.primaryStage = primaryStage;
@@ -78,6 +83,9 @@ public class MainCtrl {
 
         this.editParticipantsCtrl = editParticipantsPage.getKey();
         this.editParticipants = new Scene(editParticipantsPage.getValue());
+
+        this.addExpenseCtrl = addExpensePage.getKey();
+        this.addExpense = new Scene(addExpensePage.getValue());
 
         //showOverview();
         showStartScreen();
@@ -125,6 +133,15 @@ public class MainCtrl {
         editParticipantsCtrl.displayEditParticipantsPage(eventToShow);
         primaryStage.setTitle(languageConf.get("EditP.editParticipants"));
         primaryStage.setScene(editParticipants);
+    }
+
+    /**
+     * shows the add/edit expense page
+     * @param expenseToShow the expense to show for the add expense
+     */
+    public void showAddExpensePage(Expense expenseToShow) {
+        addExpenseCtrl.displayAddExpensePage(expenseToShow);
+        primaryStage.setScene(addExpense);
     }
 
 

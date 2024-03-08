@@ -69,7 +69,6 @@ public class Main extends Application {
      */
     public void loadLanguageResourcesAndStart(Stage primaryStage) {
         // Load all the FXML here:
-
         //var overview = FXML.load(QuoteOverviewCtrl.class,
         // "client", "scenes", "QuoteOverview.fxml");
         //var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
@@ -98,6 +97,11 @@ public class Main extends Application {
                 "client", "scenes", "EditParticipants.fxml"
         );
 
+        var addExpense = FXML.load(
+                AddExpenseCtrl.class,
+                languageConf.getLanguageResources(),
+                "client", "scenes", "AddExpense.fxml"
+        );
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 
@@ -108,7 +112,9 @@ public class Main extends Application {
                 start,
                 eventPage,
                 adminLogin,
-                editParticipants
+                editParticipants,
+                addExpense
+
         );
     }
 }
