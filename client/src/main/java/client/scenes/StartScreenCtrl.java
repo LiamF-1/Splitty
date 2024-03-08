@@ -8,10 +8,13 @@ import commons.Event;
 
 
 import jakarta.ws.rs.WebApplicationException;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 
 import java.util.ArrayList;
@@ -35,6 +38,12 @@ public class StartScreenCtrl {
 
     @FXML
     private VBox eventList;
+
+    @FXML
+    private Text joinError;
+
+    @FXML
+    private Text createEventError;
 
     /**
      * start screen controller constructor
@@ -63,6 +72,9 @@ public class StartScreenCtrl {
             languageConf.changeCurrentLocaleTo(languageChoiceBox.getValue());
         });
 
+        wordLimitError(code, joinError, 6);
+        wordLimitError(title, createEventError,100);
+
         List<String> testList = List.of("Test1", "random event",
                 "heres one more", "idk", "try deleting this");
         List<EventListItem> list = new ArrayList<>();
@@ -78,6 +90,22 @@ public class StartScreenCtrl {
         }
     }
 
+    public void wordLimitError(TextField textField, Text errorMessage, int limit){
+        String message = errorMessage.getText();
+        errorMessage.setFill(Color.RED);
+        errorMessage.setVisible(false);
+        textField.textProperty().length().addListener((observableValue, number, t1) -> {
+
+            if(textField.getText().length() <= limit){
+                errorMessage.setVisible(false);
+            }
+            if(textField.getText().length() > limit){
+                errorMessage.setVisible(true);
+                errorMessage.textProperty().bind(Bindings.concat(
+                        message, String.format(" %d/%d", textField.getText().length(), limit)));
+            }
+        });
+    }
 
     /**
      * Creates and joins the event with provided title
@@ -85,6 +113,9 @@ public class StartScreenCtrl {
     public void create() {
         if (title.getText().isEmpty()) {
             // inform that title is empty
+        }
+        else if(title.getText().length() > 100){
+            // if the user enters a name longer than 100
         }
         try {
             // addEvent should return the code
@@ -100,13 +131,16 @@ public class StartScreenCtrl {
      */
     public void join() {
         if (code.getText().isEmpty()) return;
+        if(code.getText().length() > 6){
+            // if the user enters an invalid code (longer than 6)
+        }
         try {
             Event joinedEvent = server.getEvent(code.getText());
             mainCtrl.showEventPage(joinedEvent);
         } catch (Exception e) {
             System.out.println("Something went wrong");
         }
-
-
     }
+
+
 }
