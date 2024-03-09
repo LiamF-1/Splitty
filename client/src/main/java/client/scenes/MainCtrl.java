@@ -18,7 +18,6 @@ package client.scenes;
 import client.utils.LanguageConf;
 import client.utils.UserConfig;
 import commons.Event;
-import commons.Expense;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -137,10 +136,11 @@ public class MainCtrl {
 
     /**
      * shows the add/edit expense page
-     * @param expenseToShow the expense to show for the add expense
+     * @param eventToShow the event to show the participant editor for
      */
-    public void showAddExpensePage(Expense expenseToShow) {
-        addExpenseCtrl.displayAddExpensePage(expenseToShow);
+    public void showAddExpensePage(Event eventToShow) {
+        addExpenseCtrl.displayAddExpensePage(eventToShow);
+        primaryStage.setTitle("Add/Edit Expense");
         primaryStage.setScene(addExpense);
     }
 

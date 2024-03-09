@@ -3,23 +3,15 @@ package client.scenes;
 import client.utils.LanguageConf;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Event;
 import commons.Participant;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.text.Text;
+import javafx.scene.control.*;
 import javafx.scene.text.TextFlow;
 import commons.Expense;
-import javafx.stage.Stage;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class AddExpenseCtrl {
@@ -29,10 +21,10 @@ public class AddExpenseCtrl {
     private ChoiceBox<String> expenseAuthor;
 
     @FXML
-    private Text purpose;
+    private TextField purpose;
 
     @FXML
-    private Text amount;
+    private TextField amount;
 
     @FXML
     private ChoiceBox<String> currency;
@@ -73,48 +65,66 @@ public class AddExpenseCtrl {
         this.mainCtrl = mainCtrl;
     }
 
-
     /**
-     * method for displaying the page
-     * @param e expense
+     * Method for displaying the page with a blank expense.
+     * @param event the event page to return to
      */
-    public void displayAddExpensePage(Expense e) {
-        this.expense = e;
+    public void displayAddExpensePage(Event event) {
+
         populateAuthorChoiceBox();
-        purpose.setText(e.getPurpose());
-        amount.setText(String.valueOf(e.getAmount()));
+        purpose.clear();
+        amount.clear();
         populateCurrencyChoiceBox();
-        date.setValue(computeDateOfExpense(e));
-
-        if (equalSplit.isSelected()) {
-            splitAll = true;
-        }
-        if (partialSplit.isSelected()) {
-            splitAll = false;
-        }
+        date.setValue(LocalDate.now());
+        splitAll = false; // Initialize splitAll to false by default
 
 
+        equalSplit.setOnAction(e -> {
+            if (equalSplit.isSelected()) {
+                splitAll = true;
+                partialSplit.setSelected(false);
+            }
+        });
+
+        partialSplit.setOnAction(e -> {
+            if (partialSplit.isSelected()) {
+                splitAll = false;
+                equalSplit.setSelected(false);
+            }
+        });
+
+
+        add.setOnAction(x -> {
+            boolean addedExpense = handleAddButton();
+            if (addedExpense) {
+                mainCtrl.showEventPage(event);
+            } else {
+                //expense was not added properly
+            }
+            mainCtrl.showEventPage(event); // Navigate back to the event page
+        });
+
+        abort.setOnAction(x -> mainCtrl.showEventPage(event));
 
     }
 
     /**
-     * fill the choices for the author of the expense
+     * Fill the choices for the author of the expense.
      */
     public void populateAuthorChoiceBox() {
-        List<Participant> participants = expense.getExpenseParticipants();
-        expenseAuthor.getItems().clear();
-        for (Participant p : participants) {
-            expenseAuthor.getItems().add(p.getName());
-
-        }
-        //default
-        if (!participants.isEmpty()) {
-            expenseAuthor.setValue(participants.get(0).getName());
-        }
+//        List<Participant> participants = expense.getExpenseParticipants();
+//        expenseAuthor.getItems().clear();
+//        for (Participant p : participants) {
+//            expenseAuthor.getItems().add(p.getName());
+//        }
+//        // Default selection
+//        if (!participants.isEmpty()) {
+//            expenseAuthor.setValue(participants.get(0).getName());
+//        }
     }
 
     /**
-     * fill the choices with currency
+     * Fill the choices with currency.
      */
     public void populateCurrencyChoiceBox() {
         List<String> currencies = new ArrayList<>();
@@ -123,36 +133,28 @@ public class AddExpenseCtrl {
         currencies.add("GBP");
         currencies.add("JPY");
         currency.getItems().clear();
-        for (String c : currencies) {
-            currency.getItems().add(c);
+        currency.getItems().addAll(currencies);
+    }
+
+
+    /**
+     * Behavior for add button.
+     */
+    private boolean handleAddButton() {
+        try {
+            LocalDate expDate = date.getValue();
+            String expPurpose = purpose.getText();
+            Participant part = new Participant();
+            double expAmount = Double.parseDouble(amount.getText());
+            String expCurrency = currency.getValue();
+            List<Participant> expPart = new ArrayList<>();
+            String expType = type.getValue();
+            Expense expense = new Expense(part, expPurpose, expAmount,
+                    expCurrency, expPart, expType);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
-
-    /**
-     * compute the date of the expense creation
-     * @param e expense
-     * @return the date converted to LocalDate type
-     */
-    public LocalDate computeDateOfExpense(Expense e) {
-        Date date = e.getDate();
-        Instant instant = date.toInstant();
-        ZoneId zoneId = ZoneId.systemDefault();
-
-        return instant.atZone(zoneId).toLocalDate();
-
-    }
-
-    /**
-     * behaviour for abbort button
-     * @param event
-     */
-    @FXML
-    private void handleAbortButton(ActionEvent event) {
-        Stage stage = (Stage) abort.getScene().getWindow();
-        stage.close();
-    }
-
-
-
-
 }

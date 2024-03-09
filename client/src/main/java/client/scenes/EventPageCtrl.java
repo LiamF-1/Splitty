@@ -77,7 +77,7 @@ public class EventPageCtrl {
             fromTab.setDisable(true);
             includingTab.setStyle("-fx-opacity:0");
             includingTab.setDisable(true);
-            addExpenseButton.setDisable(true);
+            //addExpenseButton.setDisable(true);
         } else {
             allTab.setStyle("-fx-opacity:1");
             allTab.setDisable(false);
@@ -138,7 +138,8 @@ public class EventPageCtrl {
 
     @FXML
     private void addExpenseClicked() {
-        mainCtrl.showAddExpensePage(expense);
+        mainCtrl.showAddExpensePage(event);
+
     }
 
 
