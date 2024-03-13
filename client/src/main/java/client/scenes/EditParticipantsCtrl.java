@@ -3,13 +3,18 @@ package client.scenes;
 import client.utils.LanguageConf;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.BankAccount;
 import commons.Event;
 import commons.Participant;
+import commons.Expense;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class EditParticipantsCtrl {
@@ -109,6 +114,38 @@ public class EditParticipantsCtrl {
      */
     @FXML
     private void saveButtonClicked() {
+        Set<Expense> expenses = new HashSet<>();
+        Set<BankAccount> bankAccounts = new HashSet<>();
+
+        int selectedIndex = chooseParticipant.getSelectionModel().getSelectedIndex();
+
+        Participant newParticipant = new Participant(
+                nameField.getText(),
+                emailField.getText(),
+                expenses,
+                bankAccounts
+        );
+
+        if (selectedIndex == 0) {
+            event.addParticipant(newParticipant);
+            chooseParticipant.getItems().add(newParticipant.getName());
+            chooseParticipant.getSelectionModel().select(newParticipant.getName());
+            saveButton.setText(languageConf.get("EditP.save"));
+
+            nameField.clear();
+            emailField.clear();
+            ibanField.clear();
+            bicField.clear();
+        } else {
+            event.getParticipants().set(selectedIndex - 1, newParticipant);
+
+            chooseParticipant.getItems().set(selectedIndex, newParticipant.getName());
+
+            chooseParticipant.getSelectionModel().select(newParticipant.getName());
+        }
+
 
     }
+
+
 }

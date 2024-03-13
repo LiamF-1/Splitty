@@ -139,7 +139,7 @@ public class MainCtrl {
      * @param eventToShow the event to show the participant editor for
      */
     public void showAddExpensePage(Event eventToShow) {
-        addExpenseCtrl.displayAddExpensePage(eventToShow);
+        EventPageCtrl.addExpenseCtrl.displayAddExpensePage(eventToShow);
         primaryStage.setTitle("Add/Edit Expense");
         primaryStage.setScene(addExpense);
     }

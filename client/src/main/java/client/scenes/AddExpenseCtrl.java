@@ -54,15 +54,17 @@ public class AddExpenseCtrl {
     private MainCtrl mainCtrl;
     private LanguageConf languageConf;
     private Expense expense;
+    private List<Participant> participants;
 
     /**
      * @param server   serverutils instance
      * @param mainCtrl main control instance
      */
     @Inject
-    public AddExpenseCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AddExpenseCtrl(ServerUtils server, MainCtrl mainCtrl, List<Participant> participants) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.participants = participants;
     }
 
     /**
@@ -72,6 +74,7 @@ public class AddExpenseCtrl {
     public void displayAddExpensePage(Event event) {
 
         populateAuthorChoiceBox();
+        populateTypeBox();
         purpose.clear();
         amount.clear();
         populateCurrencyChoiceBox();
@@ -140,7 +143,7 @@ public class AddExpenseCtrl {
     /**
      * Behavior for add button.
      */
-    private boolean handleAddButton() {
+    public boolean handleAddButton() {
         try {
             LocalDate expDate = date.getValue();
             String expPurpose = purpose.getText();
@@ -156,5 +159,14 @@ public class AddExpenseCtrl {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * show corresponding tags for expense
+     */
+    public void populateTypeBox() {
+        type.getItems().add("food");
+        type.getItems().add("entrance fees");
+        type.getItems().add("travel");
     }
 }

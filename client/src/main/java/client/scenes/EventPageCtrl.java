@@ -38,6 +38,7 @@ public class EventPageCtrl {
 
 
     private int selectedParticipantId;
+    public static AddExpenseCtrl addExpenseCtrl;
 
 
     private ServerUtils server;
@@ -113,6 +114,8 @@ public class EventPageCtrl {
             fromTab.setText(languageConf.get("EventPage.from") + " " + name);
             includingTab.setText(languageConf.get("EventPage.including") + " " + name);
         });
+
+        addExpenseCtrl = new AddExpenseCtrl(server, mainCtrl, event.getParticipants());
     }
 
     @FXML
