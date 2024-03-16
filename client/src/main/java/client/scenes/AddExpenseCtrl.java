@@ -59,12 +59,12 @@ public class AddExpenseCtrl {
     /**
      * @param server   serverutils instance
      * @param mainCtrl main control instance
+
      */
     @Inject
-    public AddExpenseCtrl(ServerUtils server, MainCtrl mainCtrl, List<Participant> participants) {
+    public AddExpenseCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-        this.participants = participants;
     }
 
     /**
@@ -79,7 +79,7 @@ public class AddExpenseCtrl {
         amount.clear();
         populateCurrencyChoiceBox();
         date.setValue(LocalDate.now());
-        splitAll = false; // Initialize splitAll to false by default
+        splitAll = false;
 
 
         equalSplit.setOnAction(e -> {
@@ -104,7 +104,7 @@ public class AddExpenseCtrl {
             } else {
                 //expense was not added properly
             }
-            mainCtrl.showEventPage(event); // Navigate back to the event page
+            mainCtrl.showEventPage(event);
         });
 
         abort.setOnAction(x -> mainCtrl.showEventPage(event));
@@ -142,6 +142,7 @@ public class AddExpenseCtrl {
 
     /**
      * Behavior for add button.
+     * @return true if added succesfully, false otherwise
      */
     public boolean handleAddButton() {
         try {

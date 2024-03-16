@@ -38,7 +38,7 @@ public class EventPageCtrl {
 
 
     private int selectedParticipantId;
-    public static AddExpenseCtrl addExpenseCtrl;
+
 
 
     private ServerUtils server;
@@ -105,7 +105,6 @@ public class EventPageCtrl {
             fromTab.setText(languageConf.get("EventPage.from") + " " + name);
             includingTab.setText(languageConf.get("EventPage.including") + " " + name);
         }
-
         participantChoiceBox.setOnAction(event -> {
             selectedParticipantId = participantChoiceBox.getSelectionModel().getSelectedIndex();
             if (selectedParticipantId < 0) return;
@@ -115,7 +114,6 @@ public class EventPageCtrl {
             includingTab.setText(languageConf.get("EventPage.including") + " " + name);
         });
 
-        addExpenseCtrl = new AddExpenseCtrl(server, mainCtrl, event.getParticipants());
     }
 
     @FXML
