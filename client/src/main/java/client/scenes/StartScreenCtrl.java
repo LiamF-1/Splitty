@@ -12,10 +12,10 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +45,10 @@ public class StartScreenCtrl {
     @FXML
     private Text createEventError;
 
+    @FXML
+    private AnchorPane startScreenPane;
+
+
     /**
      * start screen controller constructor
      *
@@ -58,7 +62,6 @@ public class StartScreenCtrl {
         this.server = server;
 
         this.languageConf = languageConf;
-
     }
 
     /**
@@ -112,10 +115,14 @@ public class StartScreenCtrl {
      */
     public void create() {
         if (title.getText().isEmpty()) {
-            // inform that title is empty
+            System.out.println("Empty Title Error");
+            ErrorPopupCtrl error = new ErrorPopupCtrl();
+            error.showPopup(startScreenPane);
         }
         else if(title.getText().length() > 100){
-            // if the user enters a name longer than 100
+            System.out.println("Word Limit Error");
+            ErrorPopupCtrl error = new ErrorPopupCtrl();
+            error.showPopup(startScreenPane);
         }
         try {
             // addEvent should return the code
@@ -132,7 +139,9 @@ public class StartScreenCtrl {
     public void join() {
         if (code.getText().isEmpty()) return;
         if(code.getText().length() > 6){
-            // if the user enters an invalid code (longer than 6)
+            System.out.println("Word Limit Error");
+            ErrorPopupCtrl error = new ErrorPopupCtrl();
+            error.showPopup(startScreenPane);
         }
         try {
             Event joinedEvent = server.getEvent(code.getText());
