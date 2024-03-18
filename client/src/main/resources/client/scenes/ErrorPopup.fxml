@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <BorderPane fx:id="errorPopupPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ErrorPopupCtrl">
@@ -30,7 +29,7 @@
          <children>
             <VBox alignment="TOP_CENTER" layoutY="13.0" prefHeight="55.0" prefWidth="201.0">
                <children>
-                  <Text fx:id="errorDescription" strokeType="OUTSIDE" strokeWidth="0.0" text="%ErrorPopup.errorDescription" />
+                  <Text fx:id="errorDescription" strokeType="OUTSIDE" strokeWidth="0.0" text="Error" />
                </children>
             </VBox>
             <Button fx:id="errorButton" layoutX="75.0" layoutY="68.0" mnemonicParsing="false" text="Button" />
@@ -42,11 +41,7 @@
          <children>
             <HBox alignment="CENTER" layoutX="65.0" prefHeight="40.0" prefWidth="222.0">
                <children>
-                  <Text fx:id="errorHeader" strokeType="OUTSIDE" strokeWidth="0.0" text="%ErrorPopup.errorHeader" wrappingWidth="194.765625">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Text>
+                  <Text fx:id="errorHeader" strokeType="OUTSIDE" strokeWidth="0.0" text="Error" />
                </children>
             </HBox>
          </children>

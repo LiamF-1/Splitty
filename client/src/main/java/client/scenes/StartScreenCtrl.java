@@ -116,7 +116,7 @@ public class StartScreenCtrl {
     public void create() {
         if (title.getText().isEmpty()) {
             System.out.println("Empty Title Error");
-            ErrorPopupCtrl error = new ErrorPopupCtrl();
+            ErrorPopupCtrl error = new ErrorPopupCtrl(mainCtrl, languageConf);
             String header = "You have entered an empty title for an event";
             String description = "Empty title for events are not supported." +
                     " Please enter a valid title for the event";
@@ -127,7 +127,7 @@ public class StartScreenCtrl {
             String header = "You have exceeded the word limit.";
             String description = "Event titles over 100 characters are not supported." +
                     " Please enter a valid title for the event";
-            ErrorPopupCtrl error = new ErrorPopupCtrl();
+            ErrorPopupCtrl error = new ErrorPopupCtrl(mainCtrl, languageConf);
             error.showPopup(startScreenPane, header, description);
         }
         try {
@@ -146,7 +146,7 @@ public class StartScreenCtrl {
         if (code.getText().isEmpty()) return;
         if(code.getText().length() > 6){
             System.out.println("Word Limit Error");
-            ErrorPopupCtrl error = new ErrorPopupCtrl();
+            ErrorPopupCtrl error = new ErrorPopupCtrl(mainCtrl, languageConf);
             String header = "You have exceeded the word limit.";
             String description = "Event codes over 6 characters are not supported." +
                     " Please enter a valid code to join the event";

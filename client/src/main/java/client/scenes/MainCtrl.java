@@ -28,9 +28,10 @@ public class MainCtrl {
     private StartScreenCtrl startScreenCtrl;
     private Scene startScreen;
     private LanguageConf languageConf;
-
     private EventPageCtrl eventPageCtrl;
     private Scene eventPage;
+    private ErrorPopupCtrl errorPopupCtrl;
+    private Scene errorPopup;
 
     /**
      * Initializes the UI
