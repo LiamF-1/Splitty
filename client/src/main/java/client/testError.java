@@ -15,6 +15,7 @@
  */
 package client;
 
+import client.scenes.ErrorPopupCtrl;
 import client.scenes.EventPageCtrl;
 import client.scenes.MainCtrl;
 import client.scenes.StartScreenCtrl;
@@ -81,9 +82,15 @@ public class testError extends Application {
                 "client", "scenes", "EventPage.fxml"
         );
 
+        var errorPopup = FXML.load(
+                ErrorPopupCtrl.class,
+                languageConf.getLanguageResources(),
+                "client", "scenes", "ErrorPopup.fxml"
+        );
+
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, languageConf, start, eventPage);
+        mainCtrl.initialize(primaryStage, languageConf, start, eventPage, errorPopup);
 
     }
 }

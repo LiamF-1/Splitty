@@ -2,12 +2,12 @@ package client.scenes;
 
 import client.utils.LanguageConf;
 import com.google.inject.Inject;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -61,25 +61,12 @@ public class ErrorPopupCtrl {
         String languageURL = Objects.requireNonNull(getClass().getResource
                 ("/languages_" + languageConf.getCurrentLocaleString() + ".properties")).getPath();
         try(FileInputStream fis = new FileInputStream(languageURL)){
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/scenes/ErrorPopup.fxml"));
-
+            this.errorImage.setImage(new Image(String.valueOf(
+                    getClass().getResource("/client/scenes/icons8-error-96.png"))));
             Properties prop = new Properties();
             prop.load(fis);
-
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Error!");
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.initModality(Modality.APPLICATION_MODAL);
-
-            stage.show();
-            //this.errorDescription.textProperty().bind(Bindings.concat(errorDescription));
             this.errorHeader.setText(errorHeader);
             this.errorDescription.setText(errorDescription);
-            stage.setX(base.getX() - scene.getWidth()/2 + base.getWidth()/2);
-            stage.setY(base.getY() - scene.getHeight()/2 + base.getHeight()/2);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

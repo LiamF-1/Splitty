@@ -19,6 +19,7 @@ import client.utils.LanguageConf;
 import commons.Event;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -49,7 +50,8 @@ public class MainCtrl {
             Stage primaryStage,
             LanguageConf languageConf,
             Pair<StartScreenCtrl, Parent> startScreen,
-            Pair<EventPageCtrl, Parent> eventPage
+            Pair<EventPageCtrl, Parent> eventPage,
+            Pair<ErrorPopupCtrl, Parent> errorPopup
     ) {
 
         this.primaryStage = primaryStage;
@@ -66,11 +68,12 @@ public class MainCtrl {
         this.eventPageCtrl = eventPage.getKey();
         this.eventPage = new Scene(eventPage.getValue());
 
+        this.errorPopupCtrl = errorPopup.getKey();
+        this.errorPopup = new Scene(errorPopup.getValue());
+
         //showOverview();
         showStartScreen();
         primaryStage.show();
-
-
     }
 
     /**
@@ -89,6 +92,14 @@ public class MainCtrl {
     public void showEventPage(Event eventToShow) {
         eventPageCtrl.displayEvent(eventToShow);
         primaryStage.setScene(eventPage);
+    }
+
+    public void showErrorPopup(Pane pane, String header, String description){
+        errorPopupCtrl.showPopup(pane, header, description);
+        Stage stage = new Stage();
+        stage.setScene(errorPopup);
+        stage.setResizable(false);
+        stage.show();
     }
 
     /**
