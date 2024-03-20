@@ -20,6 +20,7 @@ import commons.Event;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -94,11 +95,23 @@ public class MainCtrl {
         primaryStage.setScene(eventPage);
     }
 
-    public void showErrorPopup(Pane pane, String header, String description){
-        errorPopupCtrl.showPopup(pane, header, description);
+    public void showErrorPopup(String type, String place){
+        errorPopupCtrl.generatePopup(type, place);
         Stage stage = new Stage();
         stage.setScene(errorPopup);
         stage.setResizable(false);
+        stage.setTitle("Error");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.show();
+    }
+
+    public void showWordLimitErrorPopup(String type, String place, int limit){
+        errorPopupCtrl.generatePopup(type, place, limit);
+        Stage stage = new Stage();
+        stage.setScene(errorPopup);
+        stage.setResizable(false);
+        stage.setTitle("Error");
+        stage.initModality(Modality.APPLICATION_MODAL);
         stage.show();
     }
 
