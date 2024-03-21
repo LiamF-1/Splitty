@@ -43,11 +43,6 @@ public class ErrorPopupCtrl {
         this.languageConf = languageConf;
     }
 
-    public ErrorPopupCtrl() {
-        mainCtrl = null;
-        languageConf = null;
-    }
-
     public void generatePopup(String type, String place){
         String languageURL = Objects.requireNonNull(getClass().getResource
                 ("/languages_" + languageConf.getCurrentLocaleString() + ".properties")).getPath();

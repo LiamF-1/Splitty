@@ -125,7 +125,7 @@ public class StartScreenCtrl {
             return;
         }
         try {
-            // addEvent should return the code
+            //addEvent should return the code
             //mainCtrl.showEvent(server.addEvent(title.getText()));
         } catch (WebApplicationException e) {
             //error
@@ -140,6 +140,8 @@ public class StartScreenCtrl {
         if (code.getText().isEmpty()){
             System.out.println("Empty Field Error");
             mainCtrl.showErrorPopup("emptyFieldError", "an Event Code");
+            //wordLimitError(code, joinError, 6);
+            return;
         }
         if(code.getText().length() > 6){
             System.out.println("Word Limit Error");

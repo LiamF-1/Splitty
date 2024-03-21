@@ -13,7 +13,7 @@
 
 <BorderPane fx:id="errorPopupPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ErrorPopupCtrl">
    <left>
-      <Pane prefHeight="123.0" prefWidth="130.0" BorderPane.alignment="TOP_CENTER">
+      <Pane prefHeight="116.0" prefWidth="117.0" BorderPane.alignment="TOP_CENTER">
          <children>
             <ImageView fx:id="errorImage" fitWidth="96.0" layoutX="17.0" nodeOrientation="INHERIT">
                <image>
@@ -26,7 +26,7 @@
    <center>
       <Pane prefHeight="28.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox alignment="TOP_CENTER" layoutX="16.0" layoutY="14.0" prefHeight="55.0" prefWidth="168.0">
+            <VBox alignment="TOP_CENTER" layoutX="6.0" layoutY="14.0" prefHeight="55.0" prefWidth="181.0">
                <children>
                   <Text fx:id="errorDescription" strokeType="INSIDE" strokeWidth="0.0" text="Error" wrappingWidth="170.47430419921875" />
                </children>
