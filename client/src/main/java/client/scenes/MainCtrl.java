@@ -19,7 +19,6 @@ import client.utils.LanguageConf;
 import commons.Event;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -43,7 +42,7 @@ public class MainCtrl {
      //* @param add controller and parent
      * @param languageConf the language config
      * @param startScreen controller and scene
-
+     * @param errorPopup controller and scene for errorPopup
      * @param eventPage controller and scene for eventpage
      *
      */
@@ -95,6 +94,12 @@ public class MainCtrl {
         primaryStage.setScene(eventPage);
     }
 
+    /**
+     * Show error popup for general usage
+     * @param type type of error
+     * @param place place of error
+     * Check ErrorPopupCtrl for more detailed documentation
+     */
     public void showErrorPopup(String type, String place){
         errorPopupCtrl.generatePopup(type, place);
         Stage stage = new Stage();
@@ -105,6 +110,13 @@ public class MainCtrl {
         stage.show();
     }
 
+    /**
+     * Show error popup for general usage
+     * @param type type of error
+     * @param place place of error
+     * @param limit
+     * Check ErrorPopupCtrl for more detailed documentation
+     */
     public void showWordLimitErrorPopup(String type, String place, int limit){
         errorPopupCtrl.generatePopup(type, place, limit);
         Stage stage = new Stage();

@@ -93,6 +93,12 @@ public class StartScreenCtrl {
         }
     }
 
+    /**
+     *
+     * @param textField
+     * @param errorMessage
+     * @param limit
+     */
     public void wordLimitError(TextField textField, Text errorMessage, int limit){
         String message = errorMessage.getText();
         errorMessage.setFill(Color.RED);
