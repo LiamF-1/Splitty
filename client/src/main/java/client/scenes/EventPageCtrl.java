@@ -8,10 +8,12 @@ import com.google.inject.Inject;
 import commons.Event;
 import commons.Participant;
 import commons.WebsocketActions;
+import commons.Expense;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Tab;
+
 import javafx.scene.text.Text;
 
 
@@ -214,6 +216,7 @@ public class EventPageCtrl {
     public void changeTitle(String newTitle) {
         event.setTitle(newTitle);
         eventTitle.setText(newTitle);
+
     }
 
     @FXML
@@ -240,7 +243,9 @@ public class EventPageCtrl {
 
     @FXML
     private void addExpenseClicked() {
+        mainCtrl.showAddExpensePage(event);
 
     }
+
 
 }

@@ -3,13 +3,18 @@ package client.scenes;
 import client.utils.LanguageConf;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.BankAccount;
 import commons.Event;
 import commons.Participant;
+import commons.Expense;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class EditParticipantsCtrl {
@@ -129,4 +134,6 @@ public class EditParticipantsCtrl {
         }
 
     }
+
+
 }

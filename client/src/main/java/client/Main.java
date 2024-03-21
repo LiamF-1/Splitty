@@ -93,6 +93,12 @@ public class Main extends Application {
                 languageConf.getLanguageResources(),
                 "client", "scenes", "AdminOverview.fxml"
         );
+        var addExpense = FXML.load(
+                AddExpenseCtrl.class,
+                languageConf.getLanguageResources(),
+                "client", "scenes", "AddExpense.fxml"
+        );
+
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 
         mainCtrl.initialize(
@@ -103,7 +109,9 @@ public class Main extends Application {
                 eventPage,
                 adminLogin,
                 editParticipants,
-                adminOverview
+                adminOverview,
+                addExpense
+
         );
 
     }

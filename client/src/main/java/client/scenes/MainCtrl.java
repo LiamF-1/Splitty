@@ -39,6 +39,8 @@ public class MainCtrl {
 
     private AdminLoginCtrl adminLoginCtrl;
     private EditParticipantsCtrl editParticipantsCtrl;
+    private AddExpenseCtrl addExpenseCtrl;
+    private Scene addExpense;
     private Scene editParticipants;
 
     private EventPageCtrl eventPageCtrl;
@@ -68,8 +70,8 @@ public class MainCtrl {
      * @param eventPage            controller and scene for event page
      * @param adminLogin           admin login controller and scene
      * @param editParticipantsPage controller and scene for editParticipants
-     * @param adminOverview        admin overview controller and scene
-     */
+     * @param addExpensePage controller and scene for addExpense
+     * */
     public void initialize(
             Stage primaryStage,
             LanguageConf languageConf,
@@ -78,6 +80,7 @@ public class MainCtrl {
             Pair<EventPageCtrl, Parent> eventPage,
             Pair<AdminLoginCtrl, Parent> adminLogin,
             Pair<EditParticipantsCtrl, Parent> editParticipantsPage,
+            Pair<AddExpenseCtrl, Parent> addExpensePage,
             Pair<AdminOverviewCtrl, Parent> adminOverview
     ) {
 
@@ -102,6 +105,9 @@ public class MainCtrl {
         this.adminOverviewCtrl = adminOverview.getKey();
         this.adminOverview = new Scene(adminOverview.getValue());
 
+        this.addExpenseCtrl = addExpensePage.getKey();
+        this.addExpense = new Scene(addExpensePage.getValue());
+
         //showOverview();
         showStartScreen();
         primaryStage.show();
@@ -118,6 +124,8 @@ public class MainCtrl {
         primaryStage.setScene(startScreen);
 
     }
+
+
 
     /**
      * Display admin login
@@ -170,6 +178,16 @@ public class MainCtrl {
      */
     public File showSaveFileDialog(FileChooser fileChooser) {
         return fileChooser.showSaveDialog(primaryStage);
+    }
+
+    /**
+     * shows the add/edit expense page
+     * @param eventToShow the event to show the participant editor for
+     */
+    public void showAddExpensePage(Event eventToShow) {
+        addExpenseCtrl.displayAddExpensePage(eventToShow);
+        primaryStage.setTitle("Add/Edit Expense");
+        primaryStage.setScene(addExpense);
     }
 
 
