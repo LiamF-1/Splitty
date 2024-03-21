@@ -65,7 +65,6 @@ public class Main extends Application {
      * @param primaryStage the primary stage
      */
     public void loadLanguageResourcesAndStart(Stage primaryStage) {
-        // Load all the FXML here:
         var start = FXML.load(
                 StartScreenCtrl.class,
                 languageConf.getLanguageResources(),
@@ -109,8 +108,8 @@ public class Main extends Application {
                 eventPage,
                 adminLogin,
                 editParticipants,
-                adminOverview,
-                addExpense
+                addExpense,
+                adminOverview
 
         );
 

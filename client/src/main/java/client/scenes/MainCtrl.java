@@ -71,7 +71,8 @@ public class MainCtrl {
      * @param adminLogin           admin login controller and scene
      * @param editParticipantsPage controller and scene for editParticipants
      * @param addExpensePage controller and scene for addExpense
-     * */
+     * @param adminOverview controller and scene for adminOverview
+     */
     public void initialize(
             Stage primaryStage,
             LanguageConf languageConf,
