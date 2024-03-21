@@ -6,9 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.scene.image.ImageView;
 
 import java.io.FileInputStream;
@@ -20,9 +18,6 @@ public class ErrorPopupCtrl {
 
     private final MainCtrl mainCtrl;
     private final LanguageConf languageConf;
-
-    @FXML
-    private BorderPane errorPopupPane;
     @FXML
     private Text errorHeader;
     @FXML
