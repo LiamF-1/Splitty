@@ -25,14 +25,14 @@ import java.util.Properties;
  *      errorImage: Image of the error
  *      errorButton: A button within the error. Currently unused
  * Methods:
- *      generatePopup(String type, String place)
+ *      generatePopup(String type, String token)
  *          type: Type of error. Used to locate the header and description in the language.conf
  *          This must be compatible with the language.conf format of: ErrorPopup.<type>
- *          place: Field of the error caused. Example: For creating an event place is an Event.
+ *          token: Field of the error caused. Example: For creating an event token is an Event.
  *          This needs a better name
- *      generatePopup(String type, String place, int limit)
+ *      generatePopup(String type, String token, int limit)
  *          This must be compatible with the language.conf format of: ErrorPopup.<type>
- *          place: Field of the error caused. Example: For creating an event place is an Event.
+ *          token: Field of the error caused. Example: For creating an event token is an Event.
  *          This needs a better name
  *          limit: word limit for the field.
  */
@@ -71,9 +71,9 @@ public class ErrorPopupCtrl {
     /**
      *
      * @param type
-     * @param place
+     * @param token
      */
-    public void generatePopup(String type, String place){
+    public void generatePopup(String type, String token){
         String languageURL = Objects.requireNonNull(getClass().getResource
                 ("/languages_" + languageConf.getCurrentLocaleString() + ".properties")).getPath();
         try(FileInputStream fis = new FileInputStream(languageURL)){
@@ -83,9 +83,9 @@ public class ErrorPopupCtrl {
             prop.load(fis);
 
             this.errorHeader.setText(String.format(
-                    prop.getProperty("ErrorPopup." + type + "Header"), place));
+                    prop.getProperty("ErrorPopup." + type + "Header"), token));
             this.errorDescription.setText(String.format(
-                    prop.getProperty("ErrorPopup." + type + "Description"), place));
+                    prop.getProperty("ErrorPopup." + type + "Description"), token));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -95,10 +95,10 @@ public class ErrorPopupCtrl {
     /**
      *
      * @param type
-     * @param place
+     * @param token
      * @param limit
      */
-    public void generatePopup(String type, String place, int limit){ //get a better name
+    public void generatePopup(String type, String token, int limit){ //get a better name
         String languageURL = Objects.requireNonNull(getClass().getResource
                 ("/languages_" + languageConf.getCurrentLocaleString() + ".properties")).getPath();
         try(FileInputStream fis = new FileInputStream(languageURL)){
@@ -109,7 +109,7 @@ public class ErrorPopupCtrl {
 
             this.errorHeader.setText(prop.getProperty("ErrorPopup." + type + "Header"));
             this.errorDescription.setText(String.format(
-                    prop.getProperty("ErrorPopup." + type + "Description"), place, limit));
+                    prop.getProperty("ErrorPopup." + type + "Description"), token, limit));
 
         } catch (IOException e) {
             throw new RuntimeException(e);
