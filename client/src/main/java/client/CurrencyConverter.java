@@ -14,6 +14,24 @@ import java.net.http.HttpResponse;
  * create a map of currencies and respective exchange rates and fetch
  * exchange rates from openexchangerates API.
  * Uses singleton pattern.
+ * Fields:
+ *      currencyConverter: instance of the currencyConverter
+ *      currencyMap: map of all the currency exchanges for faster
+ *      apiURI: String URI of the http request
+ *      conversionRate: Rate of base conversion according to USD for ease of access
+ *      path: path of the config file
+ * Methods:
+ *      CurrencyConverter(String apiURI, String base, double conversionRate, String path)
+ *      CurrencyConverter()
+ *      getInstance()
+ *      createInstance()
+ *      initializeCurrencyMap()
+ *      getCurrencyMap()
+ *      getExchange()
+ *      updateExchange()
+ *      addCurrency(String name, double rate)
+ *      getDate(Date)
+ *      getExchangeByDate()
  */
 public class CurrencyConverter {
 
@@ -100,6 +118,14 @@ public class CurrencyConverter {
             result.put(tempArr[0], Double.parseDouble(tempArr[1]));
         }
         return result;
+    }
+
+    /**
+     * getter for the currencyMap
+     * @return currencyMap;
+     */
+    public Map<String, Double> getCurrencyMap(){
+        return currencyMap;
     }
 
     /**
@@ -200,7 +226,7 @@ public class CurrencyConverter {
      * @param date Date of the exchange wanted
      * @return a Map made out of the exchange values from a certain date.
      */
-    public Map<String, Double> getExchangeDate(Date date) {
+    public Map<String, Double> getExchangeByDate(Date date) {
         String response = getDate(date);
         if (response == null) return null;
 
