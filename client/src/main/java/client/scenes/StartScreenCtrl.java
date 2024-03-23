@@ -12,7 +12,6 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class StartScreenCtrl {
+public class StartScreenCtrl{
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -45,9 +44,6 @@ public class StartScreenCtrl {
     @FXML
     private Text createEventError;
 
-    @FXML
-    private AnchorPane startScreenPane;
-
 
     /**
      * start screen controller constructor
@@ -60,7 +56,6 @@ public class StartScreenCtrl {
     public StartScreenCtrl(ServerUtils server, MainCtrl mainCtrl, LanguageConf languageConf) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-
         this.languageConf = languageConf;
     }
 
@@ -75,9 +70,6 @@ public class StartScreenCtrl {
             languageConf.changeCurrentLocaleTo(languageChoiceBox.getValue());
         });
 
-        wordLimitError(code, joinError, 6);
-        wordLimitError(title, createEventError,100);
-
         List<String> testList = List.of("Test1", "random event",
                 "heres one more", "idk", "try deleting this");
         List<EventListItem> list = new ArrayList<>();
@@ -91,6 +83,8 @@ public class StartScreenCtrl {
             eventList.getChildren().add(list.get(i));
 
         }
+        wordLimitError(code, joinError, 6);
+        wordLimitError(title, createEventError,100);
     }
 
     /**
@@ -103,16 +97,12 @@ public class StartScreenCtrl {
         String message = errorMessage.getText();
         errorMessage.setFill(Color.RED);
         errorMessage.setVisible(false);
-        textField.textProperty().length().addListener((observableValue, number, t1) -> {
+        textField.textProperty().addListener((observableValue, number, t1)->{
+            errorMessage.setVisible(true);
+            errorMessage.textProperty().bind(Bindings.concat(
+                    message, String.format(" %d/%d", textField.getText().length(), limit)));
 
-            if(textField.getText().length() <= limit){
-                errorMessage.setVisible(false);
-            }
-            if(textField.getText().length() > limit){
-                errorMessage.setVisible(true);
-                errorMessage.textProperty().bind(Bindings.concat(
-                        message, String.format(" %d/%d", textField.getText().length(), limit)));
-            }
+            errorMessage.setVisible(textField.getLength() > limit);
         });
     }
 
@@ -161,6 +151,4 @@ public class StartScreenCtrl {
             System.out.println("Something went wrong");
         }
     }
-
-
 }
