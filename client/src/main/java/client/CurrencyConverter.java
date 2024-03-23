@@ -1,6 +1,7 @@
 package client;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -18,7 +19,7 @@ public class CurrencyConverter {
 
     private static CurrencyConverter currencyConverter;
     private static Map<String, Double> currencyMap;
-    private URI apiURI;
+    private String apiURI;
     private String base;
     private double conversionRate;
     private String path;
@@ -27,7 +28,7 @@ public class CurrencyConverter {
     /**
      * @param apiURI custom uri for dependency injection
      */
-    private CurrencyConverter(URI apiURI, String base, double conversionRate, String path) {
+    private CurrencyConverter(String apiURI, String base, double conversionRate, String path) {
         this.apiURI = apiURI;
         this.base = base;
         this.conversionRate = conversionRate;
@@ -48,10 +49,11 @@ public class CurrencyConverter {
         this.path = path;
         this.base = "EUR";
         try (Reader fileReader = new FileReader(path)) {
-            this.apiURI = new URI("https://openexchangerates.org/api/" + "latest.json?app_id=4368d26633d149e0b992c5bcdce76270");
+            this.apiURI = "https://openexchangerates.org/api/" +
+                    "%s.json?app_id=4368d26633d149e0b992c5bcdce76270";
             currencyMap = initializeCurrencyMap(fileReader);
             this.conversionRate = 1;
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -76,7 +78,7 @@ public class CurrencyConverter {
      * @return Instance of currency converter
      */
     public static CurrencyConverter createInstance(
-            URI apiURI, String base, double conversionRate, String path) {
+            String apiURI, String base, double conversionRate, String path) {
         if (currencyConverter == null) {
             currencyConverter = new CurrencyConverter(apiURI, base, conversionRate, path);
         }
@@ -84,9 +86,8 @@ public class CurrencyConverter {
     }
 
     /**
-     *
      * @param fileReader reads file to initialize the currencyMap. If the file is empty, it fetches
-     * the currencies and initializes them on the config file
+     *                   the currencies and initializes them on the config file
      * @return CurrencyMap created with values from the config file
      */
     public Map<String, Double> initializeCurrencyMap(Reader fileReader) {
@@ -106,19 +107,18 @@ public class CurrencyConverter {
      */
     public String getExchange() {
         HttpClient httpClient = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().uri(apiURI).GET().build();
-
         HttpResponse response;
         try {
+            HttpRequest request = HttpRequest.newBuilder().uri(
+                    new URI(String.format(apiURI, "latest"))).GET().build();
             response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
         return response.body().toString();
     }
 
     /**
-     *
      * @return updates the currencies.properties file by fetching
      * up-to-date exchange data from the API.
      */
@@ -145,7 +145,6 @@ public class CurrencyConverter {
     }
 
     /**
-     *
      * @param base change the base currency of the user
      * @return true if the base currency can be changed, false otherwise
      */
@@ -160,6 +159,7 @@ public class CurrencyConverter {
 
     /**
      * Adds a currency to the properties file if it doesn't already exist and has valid values.
+     *
      * @param name name of the currency
      * @param rate rate of the currency
      * @return true if a new currency is added, false otherwise
@@ -174,5 +174,45 @@ public class CurrencyConverter {
             throw new RuntimeException(e);
         }
         return true;
+    }
+
+    /**
+     * @param date Date of the exchange wanted
+     * @return the String of the response format.
+     */
+    public String getDate(Date date) {
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpResponse response;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            HttpRequest request = HttpRequest.newBuilder().uri(new URI(
+                    String.format(apiURI, "historical/" + formatter.format(date)))).GET().build();
+            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        } catch (IOException | InterruptedException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        return response.body().toString();
+    }
+
+    /**
+     * @param date Date of the exchange wanted
+     * @return a Map made out of the exchange values from a certain date.
+     */
+    public Map<String, Double> getExchangeDate(Date date) {
+        String response = getDate(date);
+        if (response == null) return null;
+
+        List<String> propertiesList = new BufferedReader(
+                new StringReader(response)).lines().toList();
+        Map<String, Double> result = new HashMap<>();
+
+        for (int i = 7; i < propertiesList.size() - 2; i++) {
+            String[] tempArr = propertiesList.get(i).split(": ");
+            result.put(tempArr[0].replaceAll("[, " + (char) 34 + "]", ""),
+                    Double.parseDouble(tempArr[1].replaceAll("[, ]", "")));
+        }
+        return result;
     }
 }
