@@ -12,19 +12,19 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventPageCtrl">
+<AnchorPane styleClass="anchor-pane"   prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EventPageCtrl" stylesheets="@/client/scenes/style.css">
    <children>
-      <Pane prefHeight="61.0" prefWidth="600.0" style="-fx-background-color: #ddd;">
+      <Pane prefHeight="61.0" prefWidth="600.0" style="-fx-background-color: #3d4af8;">
          <children>
-            <Text fx:id="eventTitle" layoutX="14.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Year Party">
+            <Text fx:id="eventTitle" layoutX="14.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Year Party" style="-fx-text-fill: #ddd ">
                <font>
-                  <Font name="System Bold" size="36.0" />
+                  <Font name="System Bold" size="36.0"  />
                </font>
             </Text>
-            <Button layoutX="450.0" layoutY="18.0" mnemonicParsing="false" onAction="#sendInvitesClicked" text="%EventPage.sendInvites" />
+            <Button  styleClass="button" layoutX="450.0" layoutY="18.0" mnemonicParsing="false" onAction="#sendInvitesClicked" text="%EventPage.sendInvites" />
          </children>
       </Pane>
-      <VBox layoutX="108.0" layoutY="78.0" prefHeight="289.0" prefWidth="383.0">
+      <VBox    layoutX="108.0" layoutY="78.0" prefHeight="289.0" prefWidth="383.0">
          <children>
             <HBox>
                <children>
@@ -33,7 +33,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Text>
-                  <Button mnemonicParsing="false" onAction="#editParticipantsClicked" text="%EventPage.editParticipants">
+                  <Button styleClass="button" mnemonicParsing="false" onAction="#editParticipantsClicked" text="%EventPage.editParticipants">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
@@ -58,8 +58,8 @@
             </Text>
             <HBox>
                <children>
-                  <ChoiceBox fx:id="participantChoiceBox" prefWidth="150.0" />
-                  <Button fx:id="addExpenseButton" mnemonicParsing="false" onAction="#addExpenseClicked" text="%EventPage.addExpense">
+                  <ChoiceBox styleClass="combo-box" fx:id="participantChoiceBox" prefWidth="150.0" />
+                  <Button styleClass="button" fx:id="addExpenseButton" mnemonicParsing="false" onAction="#addExpenseClicked" text="%EventPage.addExpense">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
@@ -78,6 +78,6 @@
             </TabPane>
          </children>
       </VBox>
-      <Button layoutX="14.0" layoutY="72.0" mnemonicParsing="false" onAction="#backButtonClicked" text="%EventPage.back" />
+      <Button styleClass="button" layoutX="14.0" layoutY="72.0" mnemonicParsing="false" onAction="#backButtonClicked" text="%EventPage.back" />
    </children>
 </AnchorPane>

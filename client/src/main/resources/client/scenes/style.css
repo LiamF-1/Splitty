@@ -1,0 +1,28 @@
+
+.label {
+    -fx-text-fill: #0d0d11; /* Dark text color */
+}
+
+.button {
+    -fx-background-color: #444fc3; /* Primary color for buttons */
+    -fx-text-fill: #f4f4f9; /* Light background color for text on buttons */
+}
+
+.text-field {
+    -fx-text-fill: #0d0d11; /* Dark text color */
+    -fx-control-inner-background: #f4f4f9; /* Light background for text fields */
+}
+
+.combo-box {
+    -fx-background-color: #858eea; /* Secondary color for combo boxes */
+}
+
+.scroll-pane {
+    -fx-background-color: #738aec; /* Accent color for scroll panes */
+    -fx-background: #738aec; /* Repeat for consistency */
+    -fx-border-color: black; /* Black border color */
+    -fx-border-width: 1; /* Border width */
+}
+.anchor-pane {
+    -fx-background-color: #738aec; /* Light blue background */
+}
