@@ -52,6 +52,8 @@ public class Event implements Cloneable {
     @Column(nullable = false)
     private Date lastActivity;
 
+    private List<String> tags;
+
     /**
      * No-Argument Constructor
      * Required by JPA
@@ -71,6 +73,10 @@ public class Event implements Cloneable {
         this.title = title;
         this.participants = new ArrayList<>();
         this.expenses = new ArrayList<>();
+        this.tags = new ArrayList<>();
+//        getTags().add("food");
+//        getTags().add("entrance fees");
+//        getTags().add("travel");
     }
 
     /**
@@ -213,6 +219,14 @@ public class Event implements Cloneable {
      */
     public void setLastActivity(Date lastActivity) {
         this.lastActivity = lastActivity;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     /**

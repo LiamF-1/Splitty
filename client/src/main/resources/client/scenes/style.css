@@ -1,0 +1,15 @@
+.tag-color {
+    -fx-background-color: #FFFFFF; /* Default background color */
+}
+
+.tag-color.food {
+    -fx-background-color: #FF0000; /* Red background color for 'food' */
+}
+
+.tag-color.entrance-fees {
+    -fx-background-color: #00FF00; /* Green background color for 'entrance fees' */
+}
+
+.tag-color.travel {
+    -fx-background-color: #0000FF; /* Blue background color for 'travel' */
+}

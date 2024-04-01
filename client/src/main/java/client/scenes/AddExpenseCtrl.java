@@ -8,15 +8,16 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import commons.Expense;
+import javafx.util.Callback;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AddExpenseCtrl {
@@ -46,13 +47,17 @@ public class AddExpenseCtrl {
     private TextFlow expenseParticipants;
 
     @FXML
-    private ChoiceBox<String> type;
+    private ComboBox<String> type;
 
     @FXML
     private Button abort;
 
     @FXML
     private Button add;
+    @FXML
+    private TextField tagTextField;
+    @FXML
+    private Button addTag;
 
     private ServerUtils server;
     private MainCtrl mainCtrl;
@@ -84,7 +89,7 @@ public class AddExpenseCtrl {
         partialSplit.setSelected(false);
         equalSplit.setDisable(false);
         populateAuthorChoiceBox(event);
-        populateTypeBox();
+        populateTypeBox(event);
         purpose.clear();
         amount.clear();
         populateCurrencyChoiceBox();
@@ -105,8 +110,16 @@ public class AddExpenseCtrl {
             }
         });
         partialSplit.setOnAction(this::handlePartialSplit);
+        addTag.setOnAction(x -> {
+            String tag = tagTextField.getText();
 
+            if (!tag.isEmpty()) {
+                event.getTags().add(tag);
+                tagTextField.clear();
+                populateTypeBox(event);
+            }
 
+        });
         add.setOnAction(x -> {
             if (exp == null) {
                 handleAddButton(event);
@@ -118,6 +131,15 @@ public class AddExpenseCtrl {
             handleAbortButton(event);
         });
     }
+
+    private String generateRandomColor() {
+        Random rand = new Random();
+        int r = rand.nextInt(256);
+        int g = rand.nextInt(256);
+        int b = rand.nextInt(256);
+        return String.format("#%02x%02x%02x", r, g, b);
+    }
+
 
 
     /**
@@ -275,7 +297,6 @@ public class AddExpenseCtrl {
                 if (selectedParticipant != null) {
                     String expCurrency = currency.getValue();
                     //expPart.add(selectedParticipant);
-
                     String expType = type.getValue();
                     Expense expense = new Expense(selectedParticipant, expPurpose, expAmount,
                             expCurrency, expPart, expType);
@@ -330,13 +351,82 @@ public class AddExpenseCtrl {
 
     /**
      * show corresponding tags for expense
+     * @param ev the current event
      */
-    public void populateTypeBox() {
-        if (type.getItems().isEmpty()) {
-            type.getItems().add("food");
-            type.getItems().add("entrance fees");
-            type.getItems().add("travel");
+    public void populateTypeBox(Event ev) {
+        Map<String, Color> colorMap = createColorMap();
+        setupTypeComboBox(colorMap);
+        addTagsToTypeComboBox(ev.getTags());
+    }
+
+    private Map<String, Color> createColorMap() {
+        Map<String, Color> colorMap = new HashMap<>();
+        colorMap.put("food", Color.GREEN);
+        colorMap.put("entrance fees", Color.BLUE);
+        colorMap.put("travel", Color.RED);
+        return colorMap;
+    }
+
+    private void setupTypeComboBox(Map<String, Color> colorMap) {
+        type.getItems().clear();
+        type.getItems().addAll("food", "entrance fees", "travel");
+        type.setCellFactory(createTypeListCellFactory(colorMap));
+        type.setButtonCell(createTypeListCell(colorMap));
+    }
+
+    private Callback<ListView<String>,
+            ListCell<String>> createTypeListCellFactory(Map<String, Color> colorMap) {
+        return param -> new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null && !empty) {
+                    Label label = createLabelWithColor(item, colorMap.get(item));
+                    setGraphic(label);
+                } else {
+                    setText(null);
+                    setGraphic(null);
+                }
+            }
+        };
+    }
+
+    private ListCell<String> createTypeListCell(Map<String, Color> colorMap) {
+        return new ListCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null && !empty) {
+                    Label label = createLabelWithColor(item, colorMap.get(item));
+                    setGraphic(label);
+                } else {
+                    setText(null);
+                    setGraphic(null);
+                }
+            }
+        };
+    }
+
+    private Label createLabelWithColor(String text, Color backgroundColor) {
+        Label label = new Label(text);
+        if (backgroundColor != null) {
+            label.setStyle("-fx-background-color: #" + toHexString(backgroundColor)
+                    + "; -fx-padding: 5px; -fx-text-fill: white;");
         }
+        double textWidth = new Text(text).getLayoutBounds().getWidth();
+        label.setMinWidth(textWidth + 10);
+        return label;
+    }
+
+    private void addTagsToTypeComboBox(List<String> tags) {
+        type.getItems().addAll(tags);
+    }
+
+    private String toHexString(Color color) {
+        return String.format("%02X%02X%02X",
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
     }
 
     /**
@@ -480,4 +570,7 @@ public class AddExpenseCtrl {
             }
         }
     }
+
+
+
 }

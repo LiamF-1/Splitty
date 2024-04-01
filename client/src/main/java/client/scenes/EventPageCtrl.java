@@ -58,6 +58,11 @@ public class EventPageCtrl {
     @FXML
     private ListView<String> includingListView ;
 
+    @FXML
+    private TextField tagTextField;
+
+
+
 
     private int selectedParticipantId;
 
@@ -73,17 +78,19 @@ public class EventPageCtrl {
     /**
      * @param mainCtrl     mainCtrl injection
      * @param languageConf the language config instance
+     * @param server the server
      * @param websocket the websocket instance
      */
     @Inject
     public EventPageCtrl(
         MainCtrl mainCtrl,
         LanguageConf languageConf,
+        ServerUtils server,
         Websocket websocket
     ) {
         this.mainCtrl = mainCtrl;
         this.languageConf = languageConf;
-
+        this.server = server;
         this.websocket = websocket;
         websocket.on(WebsocketActions.TITLE_CHANGE, (newTitle) -> changeTitle((String) newTitle));
     }
@@ -133,6 +140,7 @@ public class EventPageCtrl {
         handleWS();
         displayExpenses(event);
     }
+
     private void handleWS() {
         websocket.registerParticipantChangeListener(
                 event,
@@ -162,6 +170,7 @@ public class EventPageCtrl {
         includingTab.setDisable(true);
         addExpenseButton.setDisable(true);
     }
+
 
     /**
      * Sets the labels' styles for the case in which participants do exist
@@ -239,6 +248,8 @@ public class EventPageCtrl {
         mainCtrl.showAddExpensePage(event);
     }
 
+
+
     /**
      * create the specific displayed expenses for a listview
      * @param expenses expenses from which to create the list view
@@ -268,7 +279,6 @@ public class EventPageCtrl {
                     server.deleteExpense(expense.getId(), ev.getId());
                 });
             }
-
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -276,10 +286,14 @@ public class EventPageCtrl {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setText(null);
-                    stackPane.getChildren().clear();
-                    stackPane.getChildren().addAll(new Text(item), editButton);
-                    setGraphic(stackPane);
+                    if (item.contains("(") && item.contains(")")) {
+                        setText(item);
+                        setGraphic(null);
+                    } else {
+                        setText(null);
+                        stackPane.getChildren().set(0, new Text(item));
+                        setGraphic(stackPane);
+                    }
                 }
             }
         });
@@ -339,7 +353,6 @@ public class EventPageCtrl {
                 exp.getExpenseAuthor().getName() + " " + languageConf.get("AddExp.paid") +
                 " " + formattedAmount + " " + languageConf.get("AddExp.for") + " " +
                 exp.getPurpose();
-        return rez;
     }
 
     /**
