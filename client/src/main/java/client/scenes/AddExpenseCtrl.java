@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Event;
+import commons.Expense;
 import commons.Participant;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import commons.Expense;
 import javafx.util.Callback;
 
 import java.time.LocalDate;
@@ -54,8 +54,10 @@ public class AddExpenseCtrl {
 
     @FXML
     private Button add;
+
     @FXML
     private TextField tagTextField;
+
     @FXML
     private Button addTag;
 
@@ -63,11 +65,13 @@ public class AddExpenseCtrl {
     private MainCtrl mainCtrl;
     private List<Participant> expPart;
     private boolean splitAll = false;
+    private int previousLength = 3;
+    private Map<String, Color> colorMap = new HashMap<>();
+
 
     /**
      * @param server   server utils instance
      * @param mainCtrl main control instance
-
      */
     @Inject
     public AddExpenseCtrl(
@@ -81,13 +85,12 @@ public class AddExpenseCtrl {
 
     /**
      * Method for displaying the page with a blank expense.
+     *
      * @param event the event page to return to
-     * @param exp the expense for which the page is displayed
+     * @param exp   the expense for which the page is displayed
      */
     public void displayAddExpensePage(Event event, Expense exp) {
-        equalSplit.setSelected(false);
-        partialSplit.setSelected(false);
-        equalSplit.setDisable(false);
+        setup(event);
         populateAuthorChoiceBox(event);
         populateTypeBox(event);
         purpose.clear();
@@ -98,9 +101,7 @@ public class AddExpenseCtrl {
         populateSplitPeople(event);
         disablePartialSplitCheckboxes(true);
         equalSplit.setOnAction(e -> {
-            //splitAll = false;
             if (equalSplit.isSelected()) {
-                //splitAll = true;
                 expPart.clear();
                 partialSplit.setSelected(false);
                 disablePartialSplitCheckboxes(true);
@@ -112,13 +113,19 @@ public class AddExpenseCtrl {
         partialSplit.setOnAction(this::handlePartialSplit);
         addTag.setOnAction(x -> {
             String tag = tagTextField.getText();
-
             if (!tag.isEmpty()) {
                 event.getTags().add(tag);
                 tagTextField.clear();
+                boolean ok = false; //make sure colour is unique
+                while (!ok) {
+                    Color colour = generateRandomColor();
+                    if (!colorMap.containsValue(colour)) {
+                        colorMap.put(tag, colour);
+                        ok = true;
+                    }
+                }
                 populateTypeBox(event);
             }
-
         });
         add.setOnAction(x -> {
             if (exp == null) {
@@ -130,24 +137,44 @@ public class AddExpenseCtrl {
         abort.setOnAction(x -> {
             handleAbortButton(event);
         });
+        populateTypeBox(event);
     }
 
-    private String generateRandomColor() {
+    /**
+     * create setup for displaying the add expense page
+     * @param event
+     */
+    public void setup(Event event) {
+        type.getItems().clear();
+        if (event.getTags().isEmpty()) {
+            event.getTags().add("food");
+            event.getTags().add("entrance fees");
+            event.getTags().add("travel");
+            colorMap.put("food", Color.GREEN);
+            colorMap.put("entrance fees", Color.BLUE);
+            colorMap.put("travel", Color.RED);
+        }
+        equalSplit.setSelected(false);
+        partialSplit.setSelected(false);
+        equalSplit.setDisable(false);
+    }
+
+    private Color generateRandomColor() {
         Random rand = new Random();
         int r = rand.nextInt(256);
         int g = rand.nextInt(256);
         int b = rand.nextInt(256);
-        return String.format("#%02x%02x%02x", r, g, b);
+        return Color.rgb(r, g, b);
     }
-
-
 
     /**
      * behaviour for the edit button
+     *
      * @param ev
      * @param ex
      */
     public void editButton(Event ev, Expense ex) {
+        //populateTypeBox(ev);
         String expParticipant = expenseAuthor.getValue();
         String expPurpose = purpose.getText();
         Double expAmount = Double.parseDouble(amount.getText());
@@ -160,7 +187,7 @@ public class AddExpenseCtrl {
         String expType = type.getValue();
 
         for (Participant p : ex.getExpenseParticipants()) {
-            if (p.getName() == expParticipant) {
+            if (Objects.equals(p.getName(), expParticipant)) {
                 ex.setExpenseAuthor(p);
                 break;
             }
@@ -208,6 +235,7 @@ public class AddExpenseCtrl {
 
     /**
      * handle partial splitting
+     *
      * @param event current event
      */
     @FXML
@@ -229,25 +257,17 @@ public class AddExpenseCtrl {
         }
     }
 
-
-
-
-
     /**
-     * @param event
-     * Fill the choices for the author of the expense.
+     * @param event Fill the choices for the author of the expense.
      */
     public void populateAuthorChoiceBox(Event event) {
         expenseAuthor.getItems().clear();
-        expenseAuthor
-            .getItems()
-            .addAll(
+        expenseAuthor.getItems().addAll(
                 event.getParticipants()
                         .stream()
                         .map(Participant::getName)
                         .toList()
-            );
-
+        );
     }
 
     /**
@@ -263,9 +283,9 @@ public class AddExpenseCtrl {
         currency.getItems().addAll(currencies);
     }
 
-
     /**
      * behaviour for add button
+     *
      * @param ev current event
      */
     public void handleAddButton(Event ev) {
@@ -292,14 +312,15 @@ public class AddExpenseCtrl {
                 String selectedParticipantName = expenseAuthor.getValue();
                 Participant selectedParticipant = ev.getParticipants().stream()
                         .filter(participant -> participant.getName().
-                                equals(selectedParticipantName))
+                        equals(selectedParticipantName))
                         .findFirst().orElse(null);
                 if (selectedParticipant != null) {
                     String expCurrency = currency.getValue();
-                    //expPart.add(selectedParticipant);
                     String expType = type.getValue();
+                    System.out.println(expType);
                     Expense expense = new Expense(selectedParticipant, expPurpose, expAmount,
                             expCurrency, expPart, expType);
+                    expense.setType(expType);
                     expense.setDate(expenseDate);
                     server.createExpense(ev.getId(), expense);
                     resetExpenseFields();
@@ -327,21 +348,19 @@ public class AddExpenseCtrl {
     }
 
     /**
-     * alert for selecting at least one participant
-     * when choosing the partial split option
+     * alert for selecting at least one participant when choosing the partial split option
      */
     public void alertSelectPart() {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("No Participants Selected");
         alert.setHeaderText(null);
-        alert.setContentText("Please select at least one " +
-                "participant for partial splitting.");
+        alert.setContentText("Please select at least one participant for partial splitting.");
         alert.showAndWait();
-        return;
     }
 
     /**
      * handle the behaviour for the abort button
+     *
      * @param ev the current event
      */
     public void handleAbortButton(Event ev) {
@@ -351,25 +370,33 @@ public class AddExpenseCtrl {
 
     /**
      * show corresponding tags for expense
+     *
      * @param ev the current event
      */
     public void populateTypeBox(Event ev) {
-        Map<String, Color> colorMap = createColorMap();
-        setupTypeComboBox(colorMap);
-        addTagsToTypeComboBox(ev.getTags());
+        //colorMap = createColorMap(ev); // Assigning value to colorMap
+        setupTypeComboBox(colorMap, ev);
     }
 
-    private Map<String, Color> createColorMap() {
+    private Map<String, Color> createColorMap(Event ev) {
         Map<String, Color> colorMap = new HashMap<>();
         colorMap.put("food", Color.GREEN);
         colorMap.put("entrance fees", Color.BLUE);
         colorMap.put("travel", Color.RED);
+        for (int i = previousLength; i < ev.getTags().size(); i++) {
+            Color colour = generateRandomColor();
+            colorMap.put(ev.getTags().get(i), colour);
+        }
+        previousLength = ev.getTags().size();
         return colorMap;
     }
 
-    private void setupTypeComboBox(Map<String, Color> colorMap) {
+    //public void init()
+
+    private void setupTypeComboBox(Map<String, Color> colorMap, Event ev) {
         type.getItems().clear();
-        type.getItems().addAll("food", "entrance fees", "travel");
+        Set<String> keys = colorMap.keySet();
+        type.getItems().addAll(keys);
         type.setCellFactory(createTypeListCellFactory(colorMap));
         type.setButtonCell(createTypeListCell(colorMap));
     }
@@ -418,10 +445,6 @@ public class AddExpenseCtrl {
         return label;
     }
 
-    private void addTagsToTypeComboBox(List<String> tags) {
-        type.getItems().addAll(tags);
-    }
-
     private String toHexString(Color color) {
         return String.format("%02X%02X%02X",
                 (int) (color.getRed() * 255),
@@ -431,6 +454,7 @@ public class AddExpenseCtrl {
 
     /**
      * populate the split people list
+     *
      * @param event the current event
      */
     public void populateSplitPeople(Event event) {
@@ -448,7 +472,6 @@ public class AddExpenseCtrl {
                     expPart.remove(participant);
                     selectedPart.getAndDecrement();
                 }
-                //updateEqualSplitCheckbox();
             });
             expenseParticipants.getChildren().add(checkBox);
         }
@@ -457,7 +480,6 @@ public class AddExpenseCtrl {
             equalSplit.setSelected(true);
         }
     }
-
 
     private void disablePartialSplitCheckboxes(boolean disable) {
         for (Node node : expenseParticipants.getChildren()) {
@@ -469,7 +491,6 @@ public class AddExpenseCtrl {
 
     /**
      * Reset all the fields of an expense after adding it.
-     *
      */
     private void resetExpenseFields() {
         purpose.clear();
@@ -485,6 +506,7 @@ public class AddExpenseCtrl {
 
     /**
      * setter for the expense author field
+     *
      * @param author
      */
     public void setExpenseAuthor(String author) {
@@ -493,6 +515,7 @@ public class AddExpenseCtrl {
 
     /**
      * setter for the purposeText field
+     *
      * @param purposeText
      */
     public void setPurpose(String purposeText) {
@@ -501,6 +524,7 @@ public class AddExpenseCtrl {
 
     /**
      * setter for the amountText field
+     *
      * @param amountText
      */
     public void setAmount(String amountText) {
@@ -509,6 +533,7 @@ public class AddExpenseCtrl {
 
     /**
      * setter for the currencyText field
+     *
      * @param currencyText
      */
     public void setCurrency(String currencyText) {
@@ -517,6 +542,7 @@ public class AddExpenseCtrl {
 
     /**
      * setter for the expenseDate field
+     *
      * @param expenseDate
      */
     public void setDate(LocalDate expenseDate) {
@@ -525,6 +551,7 @@ public class AddExpenseCtrl {
 
     /**
      * setter for the typeText field
+     *
      * @param typeText
      */
     public void setType(String typeText) {
@@ -533,15 +560,16 @@ public class AddExpenseCtrl {
 
     /**
      * setter for button text
+     *
      * @param s
      */
     public void setButton(String s) {
         add.setText(s);
     }
 
-
     /**
      * Method to set the checkboxes regarding the way in which an expense is split.
+     *
      * @param exp
      * @param event
      */
@@ -570,7 +598,4 @@ public class AddExpenseCtrl {
             }
         }
     }
-
-
-
 }

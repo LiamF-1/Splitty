@@ -223,7 +223,6 @@ public class MainCtrl {
      * @param ev The event associated with the expense.
      */
     public void handleEditExpense(Expense exp, Event ev) {
-
         addExpenseCtrl.displayAddExpensePage(ev, exp);
         primaryStage.setTitle(languageConf.get("AddExp.editexp"));
         primaryStage.setScene(addExpense);
@@ -235,8 +234,11 @@ public class MainCtrl {
         addExpenseCtrl.setCurrency(exp.getCurrency());
         addExpenseCtrl.setDate(exp.getDate().toInstant().
                 atZone(ZoneId.systemDefault()).toLocalDate());
+        System.out.println(exp.getType());
         addExpenseCtrl.setType(exp.getType());
         addExpenseCtrl.setSplitCheckboxes(exp, ev);
-
+        //addExpenseCtrl.populateTypeBox(ev); // Call populateTypeBox(ev) after setting the type
+        System.out.println(exp.getAmount());
     }
+
 }
