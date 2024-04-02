@@ -17,6 +17,7 @@
         - Everyone presents their progress (7 min)
         - Make sure that the issues on Gitlab are closed and well-organised (3 min)
         - Discuss the feedback for the HCI assignment(3 min) (please take a look at it before the meeting)
+        - Update: also discuss the feedback for the Pitch and Implemented features assignments (5 min)
         - Did we succeed in adding more testing as we established? (3 min)
     - **How to proceed from here?** (19 min)
         - Brainstorm and decide what we should focus on this week. (10 min)
