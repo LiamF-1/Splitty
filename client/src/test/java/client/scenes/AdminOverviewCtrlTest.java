@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.TestIO;
 import utils.TestServerUtils;
+import utils.TestWebsocket;
 
 import java.io.IOException;
 
@@ -18,7 +19,7 @@ public class AdminOverviewCtrlTest {
     TestServerUtils server = new TestServerUtils();
     @BeforeEach
     void setUp() throws IOException {
-        MainCtrl mainCtrl = new MainCtrl(null);
+        MainCtrl mainCtrl = new MainCtrl(new TestWebsocket());
         UserConfig userConfig = new UserConfig(new TestIO("""
                 serverURL=http://localhost:8080/
                 lang=en
