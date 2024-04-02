@@ -74,7 +74,7 @@
                <tabs>
                   <Tab fx:id="allTab" text="%EventPage.all">
                      <content>
-                        <ListView fx:id="allListView" prefHeight="200.0" prefWidth="200.0" />
+                        <ListView fx:id="allListView" prefHeight="141.0" prefWidth="393.0" />
                      </content>
                   </Tab>
                   <Tab fx:id="fromTab" text="From John">
@@ -92,6 +92,5 @@
          </children>
       </VBox>
       <Button layoutX="14.0" layoutY="72.0" mnemonicParsing="false" onAction="#backButtonClicked" text="%EventPage.back" />
-
    </children>
 </AnchorPane>

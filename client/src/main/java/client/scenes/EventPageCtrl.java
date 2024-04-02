@@ -249,7 +249,6 @@ public class EventPageCtrl {
     }
 
 
-
     /**
      * create the specific displayed expenses for a listview
      * @param expenses expenses from which to create the list view

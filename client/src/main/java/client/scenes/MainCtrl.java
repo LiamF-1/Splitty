@@ -232,8 +232,7 @@ public class MainCtrl {
         addExpenseCtrl.setPurpose(exp.getPurpose());
         addExpenseCtrl.setAmount(Double.toString(exp.getAmount()));
         addExpenseCtrl.setCurrency(exp.getCurrency());
-        addExpenseCtrl.setDate(exp.getDate().toInstant().
-                atZone(ZoneId.systemDefault()).toLocalDate());
+        addExpenseCtrl.setDate(exp.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         System.out.println(exp.getType());
         addExpenseCtrl.setType(exp.getType());
         addExpenseCtrl.setSplitCheckboxes(exp, ev);
