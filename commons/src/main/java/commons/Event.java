@@ -52,7 +52,9 @@ public class Event implements Cloneable {
     @Column(nullable = false)
     private Date lastActivity;
 
-    private List<String> tags;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "event_id", updatable = false, insertable = false)
+    private List<Tag> tags;
 
     /**
      * No-Argument Constructor
@@ -78,6 +80,8 @@ public class Event implements Cloneable {
 //        getTags().add("entrance fees");
 //        getTags().add("travel");
     }
+
+
 
     /**
      * Constructor that does take arguments, uses this()
@@ -221,11 +225,11 @@ public class Event implements Cloneable {
         this.lastActivity = lastActivity;
     }
 
-    public List<String> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 

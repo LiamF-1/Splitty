@@ -27,6 +27,7 @@ public interface ServerUtils {
      * @return status code
      */
     int deleteEvent(String id);
+    //int updateEvent(String id, Event event);
 
     /**
      * @param eventId     tbe event in which the participant should be created
@@ -137,5 +138,6 @@ public interface ServerUtils {
      * @return updated event
      */
     int updateEventTitle(Event event);
+    //int addTag(String id, Event event, Tag tag);
 }
 

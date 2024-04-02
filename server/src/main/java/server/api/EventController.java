@@ -1,8 +1,11 @@
 package server.api;
 
 import commons.Event;
+import commons.Participant;
+import commons.Tag;
 import commons.WebsocketActions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,7 @@ import java.util.random.RandomGenerator;
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
+    //private final JpaRepository<Tag, String> repository;
     private final EventRepository repo;
     private final RandomGenerator random;
     private final SimpMessagingTemplate simp;
@@ -36,6 +40,7 @@ public class EventController {
         this.random = random;
         this.simp = simp;
         this.adminController = adminController;
+        //this.repository = repository;
     }
 
     /**
@@ -181,6 +186,78 @@ public class EventController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+//    @PostMapping("/{id}/tags")
+//    public ResponseEntity<Tag> addTag(@PathVariable String eventID, @RequestBody Tag tag) {
+//        try {
+//            if (!repo.existsById(eventID)) return ResponseEntity.notFound().build();
+//            if (tag.getName() == null || tag.getName().isEmpty()) {
+//                return ResponseEntity.badRequest().build();
+//            }
+//            tag.setEventId(eventID);
+//            Tag saved = repository.save(tag);
+//            adminController.update();
+//            simp.convertAndSend("/event/" + eventID, saved,
+//                    Map.of("action", WebsocketActions.ADD_TAG,
+//                            "type", Tag.class.getTypeName()));
+//            return ResponseEntity.noContent().build();
+//        } catch (Exception e) {
+//            return ResponseEntity.internalServerError().build();
+//        }
+//    }
+    /**
+     * Updates an existing event.
+     *
+     * @param id             The ID of the event to be updated.
+     * @param updatedEvent   The updated version of the event.
+     * @return               ResponseEntity with status 200 if the update is successful,
+     *                       400 if the request is malformed or invalid,
+     *                       or 404 if the event does not exist.
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Event> updateEvent(@PathVariable String id,
+                                             @RequestBody Event updatedEvent) {
+        try {
+            if (!isValidEvent(updatedEvent) || !id.equals(updatedEvent.getId())) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Optional<Event> optionalEvent = repo.findById(id);
+            if (optionalEvent.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Event existingEvent = optionalEvent.get();
+            existingEvent.setTitle(updatedEvent.getTitle());
+            existingEvent.setTags(updatedEvent.getTags()); // Update tags as well
+
+            Event savedEvent = repo.save(existingEvent);
+            adminController.update();
+
+            simp.convertAndSend("/event/" + id, savedEvent,
+                    Map.of("action", WebsocketActions.UPDATE_EVENT,
+                            "type", Event.class.getTypeName()));
+
+            return ResponseEntity.ok(savedEvent);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    /**
+     * Checks if an event is valid.
+     *
+     * @param event The event to be validated.
+     * @return      True if the event is valid, false otherwise.
+     */
+    private boolean isValidEvent(Event event) {
+        return event != null
+                && event.getId() != null
+                && event.getTitle() != null
+                && !event.getTitle().isEmpty()
+                && event.getId().length() == 5;
+    }
+
 
 
 }

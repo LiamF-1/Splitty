@@ -88,6 +88,8 @@ public class ServerUtilsImpl implements ServerUtils {
         }
     }
 
+
+
     /**
      * @param eventId     tbe event in which the participant should be created
      * @param participant the participant to be created
@@ -286,8 +288,36 @@ public class ServerUtilsImpl implements ServerUtils {
             return response.getStatus();
         }
 
-
-
-
     }
+
+//    /**
+//     * Sends a PUT request to update an existing event.
+//     *
+//     * @param event The updated event.
+//     * @return The HTTP status code indicating the result of the update operation.
+//     */
+//    @Override
+//    public int updateEvent(String id, Event event) {
+//        try (Response response = ClientBuilder.newClient(new ClientConfig())
+//                .target(server)
+//                .path("api/events/" + event.getId())
+//                .request(APPLICATION_JSON)
+//                .put(Entity.entity(event, APPLICATION_JSON))) {
+//            return response.getStatus();
+//        }
+//    }
+
+//    @Override
+//    public int addTag(String id, Event event, Tag tag) {
+//        try(Response response = ClientBuilder.newClient(new ClientConfig())
+//                .target(server)
+//                .path("api/events/" + event.getId() + "/tags")
+//                .request(APPLICATION_JSON)
+//                .post(Entity.entity(tag, APPLICATION_JSON))) {
+//            return response.getStatus();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return 0;
+//        }
+//    }
 }

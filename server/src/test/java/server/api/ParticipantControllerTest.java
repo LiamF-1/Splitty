@@ -1,11 +1,9 @@
 package server.api;
 
-import commons.Event;
-import commons.EventWeakKey;
-import commons.Participant;
-import commons.WebsocketActions;
+import commons.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.jpa.repository.JpaRepository;
 import server.AdminService;
 
 import java.util.Date;
@@ -21,6 +19,8 @@ public class ParticipantControllerTest {
     private ParticipantController partContr;
     private TestSimpMessagingTemplate template;
     private TestExpenseRepository expenseRepo;
+    private JpaRepository<Tag, String> repository;
+
     @BeforeEach
     public void setup(){
         event = new Event("title");

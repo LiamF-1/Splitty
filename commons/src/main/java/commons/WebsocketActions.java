@@ -8,5 +8,7 @@ public enum WebsocketActions {
         REMOVE_PARTICIPANT,
         ADD_EXPENSE,
         UPDATE_EXPENSE,
-        REMOVE_EXPENSE
+        REMOVE_EXPENSE,
+        ADD_TAG,
+        UPDATE_EVENT
 }

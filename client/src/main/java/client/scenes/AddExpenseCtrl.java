@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import commons.Event;
 import commons.Expense;
 import commons.Participant;
+import commons.Tag;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -61,12 +62,16 @@ public class AddExpenseCtrl {
     @FXML
     private Button addTag;
 
+    @FXML
+    private ColorPicker colorPicker;
+
     private ServerUtils server;
     private MainCtrl mainCtrl;
     private List<Participant> expPart;
     private boolean splitAll = false;
     private int previousLength = 3;
-    private Map<String, Color> colorMap = new HashMap<>();
+    //private Map<String, Color> colorMap = new HashMap<>();
+    private Color selectedColor;
 
 
     /**
@@ -90,6 +95,9 @@ public class AddExpenseCtrl {
      * @param exp   the expense for which the page is displayed
      */
     public void displayAddExpensePage(Event event, Expense exp) {
+        colorPicker.setOnAction(e -> {
+            selectedColor = colorPicker.getValue();
+        });
         setup(event);
         populateAuthorChoiceBox(event);
         populateTypeBox(event);
@@ -112,18 +120,15 @@ public class AddExpenseCtrl {
         });
         partialSplit.setOnAction(this::handlePartialSplit);
         addTag.setOnAction(x -> {
-            String tag = tagTextField.getText();
-            if (!tag.isEmpty()) {
+            String name = tagTextField.getText();
+            if (!name.isEmpty()) {
+                String clr = toHexString(selectedColor);
+                Tag tag = new Tag(name, clr, event.getId());
                 event.getTags().add(tag);
+                //server.updateEvent(event.getId(), event);
+                //server.addTag(event.getId(), event, tag);
+                //event.getTags().add(tag);
                 tagTextField.clear();
-                boolean ok = false; //make sure colour is unique
-                while (!ok) {
-                    Color colour = generateRandomColor();
-                    if (!colorMap.containsValue(colour)) {
-                        colorMap.put(tag, colour);
-                        ok = true;
-                    }
-                }
                 populateTypeBox(event);
             }
         });
@@ -147,24 +152,52 @@ public class AddExpenseCtrl {
     public void setup(Event event) {
         type.getItems().clear();
         if (event.getTags().isEmpty()) {
-            event.getTags().add("food");
-            event.getTags().add("entrance fees");
-            event.getTags().add("travel");
-            colorMap.put("food", Color.GREEN);
-            colorMap.put("entrance fees", Color.BLUE);
-            colorMap.put("travel", Color.RED);
+            Tag t1 = new Tag("food", "#00FF00", event.getId());
+            Tag t2 = new Tag("entrance fees", "#0000FF", event.getId());
+            Tag t3 = new Tag("travel", "#FF0000", event.getId());
+            event.getTags().add(t1);
+            event.getTags().add(t2);
+            event.getTags().add(t3);
+            //server.updateEvent(event.getId(), event);
+//            server.addTag(event.getId(), event, t1);
+//            server.addTag(event.getId(), event, t2);
+//            server.addTag(event.getId(), event, t3);
+//            colorMap.put("food", Color.GREEN);
+//            colorMap.put("entrance fees", Color.BLUE);
+//            colorMap.put("travel", Color.RED);
         }
         equalSplit.setSelected(false);
         partialSplit.setSelected(false);
         equalSplit.setDisable(false);
     }
 
-    private Color generateRandomColor() {
-        Random rand = new Random();
-        int r = rand.nextInt(256);
-        int g = rand.nextInt(256);
-        int b = rand.nextInt(256);
-        return Color.rgb(r, g, b);
+    /**
+     * convert from color to string
+     * @param color
+     * @return the String color
+     */
+    private String toHexString(Color color) {
+        return String.format("%02X%02X%02X",
+                (int) (color.getRed() * 255),
+                (int) (color.getGreen() * 255),
+                (int) (color.getBlue() * 255));
+    }
+
+    /**
+     * convert from string to color
+     * @param hexCode
+     * @return the Color color
+     */
+    public static Color hexToColor(String hexCode) {
+        if (!hexCode.startsWith("#")) {
+            hexCode = "#" + hexCode;
+        }
+
+        int red = Integer.parseInt(hexCode.substring(1, 3), 16);
+        int green = Integer.parseInt(hexCode.substring(3, 5), 16);
+        int blue = Integer.parseInt(hexCode.substring(5, 7), 16);
+
+        return Color.rgb(red, green, blue);
     }
 
     /**
@@ -374,42 +407,29 @@ public class AddExpenseCtrl {
      * @param ev the current event
      */
     public void populateTypeBox(Event ev) {
-        //colorMap = createColorMap(ev); // Assigning value to colorMap
-        setupTypeComboBox(colorMap, ev);
+        setupTypeComboBox(ev);
     }
 
-    private Map<String, Color> createColorMap(Event ev) {
-        Map<String, Color> colorMap = new HashMap<>();
-        colorMap.put("food", Color.GREEN);
-        colorMap.put("entrance fees", Color.BLUE);
-        colorMap.put("travel", Color.RED);
-        for (int i = previousLength; i < ev.getTags().size(); i++) {
-            Color colour = generateRandomColor();
-            colorMap.put(ev.getTags().get(i), colour);
-        }
-        previousLength = ev.getTags().size();
-        return colorMap;
-    }
-
-    //public void init()
-
-    private void setupTypeComboBox(Map<String, Color> colorMap, Event ev) {
+    private void setupTypeComboBox(Event ev) {
         type.getItems().clear();
-        Set<String> keys = colorMap.keySet();
-        type.getItems().addAll(keys);
-        type.setCellFactory(createTypeListCellFactory(colorMap));
-        type.setButtonCell(createTypeListCell(colorMap));
+        for (Tag tag : ev.getTags()) {
+            type.getItems().add(tag.getName());
+        }
+        type.setCellFactory(createTypeListCellFactory(ev));
+        type.setButtonCell(createTypeListCell(ev));
     }
 
-    private Callback<ListView<String>,
-            ListCell<String>> createTypeListCellFactory(Map<String, Color> colorMap) {
+    private Callback<ListView<String>, ListCell<String>> createTypeListCellFactory(Event ev) {
         return param -> new ListCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item != null && !empty) {
-                    Label label = createLabelWithColor(item, colorMap.get(item));
-                    setGraphic(label);
+                    Tag tag = findTagByName(item, ev.getTags());
+                    if (tag != null) {
+                        Label label = createLabelWithColor(item, hexToColor(tag.getColor()));
+                        setGraphic(label);
+                    }
                 } else {
                     setText(null);
                     setGraphic(null);
@@ -418,14 +438,17 @@ public class AddExpenseCtrl {
         };
     }
 
-    private ListCell<String> createTypeListCell(Map<String, Color> colorMap) {
+    private ListCell<String> createTypeListCell(Event ev) {
         return new ListCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item != null && !empty) {
-                    Label label = createLabelWithColor(item, colorMap.get(item));
-                    setGraphic(label);
+                    Tag tag = findTagByName(item, ev.getTags());
+                    if (tag != null) {
+                        Label label = createLabelWithColor(item, hexToColor(tag.getColor()));
+                        setGraphic(label);
+                    }
                 } else {
                     setText(null);
                     setGraphic(null);
@@ -445,12 +468,72 @@ public class AddExpenseCtrl {
         return label;
     }
 
-    private String toHexString(Color color) {
-        return String.format("%02X%02X%02X",
-                (int) (color.getRed() * 255),
-                (int) (color.getGreen() * 255),
-                (int) (color.getBlue() * 255));
+    private Tag findTagByName(String tagName, List<Tag> tags) {
+        for (Tag tag : tags) {
+            if (tag.getName().equals(tagName)) {
+                return tag;
+            }
+        }
+        return null;
     }
+
+
+
+//    private void setupTypeComboBox(Map<String, Color> colorMap, Event ev) {
+//        type.getItems().clear();
+//        List<Tag> temp = ev.getTags();
+//        //Set<String> keys = colorMap.keySet();
+//        for (Tag t : temp) {
+//            type.getItems().add(t.getName());
+//        }
+//        //type.getItems().addAll(t);
+//        type.setCellFactory(createTypeListCellFactory(colorMap));
+//        type.setButtonCell(createTypeListCell(colorMap));
+//    }
+//
+//    private Callback<ListView<String>,
+//            ListCell<String>> createTypeListCellFactory(Map<String, Color> colorMap) {
+//        return param -> new ListCell<>() {
+//            @Override
+//            protected void updateItem(String item, boolean empty) {
+//                super.updateItem(item, empty);
+//                if (item != null && !empty) {
+//                    Label label = createLabelWithColor(item, colorMap.get(item));
+//                    setGraphic(label);
+//                } else {
+//                    setText(null);
+//                    setGraphic(null);
+//                }
+//            }
+//        };
+//    }
+//
+//    private ListCell<String> createTypeListCell(Map<String, Color> colorMap) {
+//        return new ListCell<>() {
+//            @Override
+//            protected void updateItem(String item, boolean empty) {
+//                super.updateItem(item, empty);
+//                if (item != null && !empty) {
+//                    Label label = createLabelWithColor(item, colorMap.get(item));
+//                    setGraphic(label);
+//                } else {
+//                    setText(null);
+//                    setGraphic(null);
+//                }
+//            }
+//        };
+//    }
+//
+//    private Label createLabelWithColor(String text, Color backgroundColor) {
+//        Label label = new Label(text);
+//        if (backgroundColor != null) {
+//            label.setStyle("-fx-background-color: #" + toHexString(backgroundColor)
+//                    + "; -fx-padding: 5px; -fx-text-fill: white;");
+//        }
+//        double textWidth = new Text(text).getLayoutBounds().getWidth();
+//        label.setMinWidth(textWidth + 10);
+//        return label;
+//    }
 
     /**
      * populate the split people list

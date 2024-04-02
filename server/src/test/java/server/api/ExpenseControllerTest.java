@@ -3,6 +3,7 @@ package server.api;
 import commons.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.jpa.repository.JpaRepository;
 import server.AdminService;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class ExpenseControllerTest {
     private Expense expense, expense2, updExp;
     private Event event;
     private Participant p1, p2, expAuth;
+    private JpaRepository<Tag, String> repository;
 
     List<Participant> expPart;
     private TestSimpMessagingTemplate template;
