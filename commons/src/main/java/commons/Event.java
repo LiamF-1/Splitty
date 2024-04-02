@@ -225,10 +225,18 @@ public class Event implements Cloneable {
         this.lastActivity = lastActivity;
     }
 
+    /**
+     * getter for tags
+     * @return the list of tags
+     */
     public List<Tag> getTags() {
         return tags;
     }
 
+    /**
+     * setter for tags
+     * @param tags
+     */
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }

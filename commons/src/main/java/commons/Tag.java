@@ -84,7 +84,7 @@ public class Tag implements Cloneable {
 
     /**
      * toString method
-     * @return
+     * @return the string
      */
     public String toString() {
         return name;
