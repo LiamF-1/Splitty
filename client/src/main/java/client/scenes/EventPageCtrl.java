@@ -66,11 +66,10 @@ public class EventPageCtrl {
 
     private int selectedParticipantId;
 
-    private Websocket websocket;
-
-    private ServerUtils server;
-    private MainCtrl mainCtrl;
-    private LanguageConf languageConf;
+    private final Websocket websocket;
+    private final MainCtrl mainCtrl;
+    private final LanguageConf languageConf;
+    private final ServerUtils server;
     private Event event;
     private List<Expense> fromExpenses;
     private List<Expense> includingExpenses;
@@ -78,15 +77,15 @@ public class EventPageCtrl {
     /**
      * @param mainCtrl     mainCtrl injection
      * @param languageConf the language config instance
-     * @param server the server
      * @param websocket the websocket instance
+     * @param server server to be ysed
      */
     @Inject
     public EventPageCtrl(
         MainCtrl mainCtrl,
         LanguageConf languageConf,
-        ServerUtils server,
-        Websocket websocket
+        Websocket websocket,
+        ServerUtils server
     ) {
         this.mainCtrl = mainCtrl;
         this.languageConf = languageConf;
@@ -140,7 +139,6 @@ public class EventPageCtrl {
         handleWS();
         displayExpenses(event);
     }
-
     private void handleWS() {
         websocket.registerParticipantChangeListener(
                 event,
@@ -153,6 +151,10 @@ public class EventPageCtrl {
                 this::displayExpenses,
                 this::displayExpenses,
                 this::displayExpenses
+        );
+        websocket.registerEventChangeListener(
+                event,
+                this::displayEvent
         );
     }
 
@@ -170,7 +172,6 @@ public class EventPageCtrl {
         includingTab.setDisable(true);
         addExpenseButton.setDisable(true);
     }
-
 
     /**
      * Sets the labels' styles for the case in which participants do exist
@@ -199,10 +200,12 @@ public class EventPageCtrl {
      * Changes the title of the event
      *
      * @param newTitle new title of the event
+     * @return 204 if successful, 400 if there is a problem with input, 404 if event cannot be found
      */
-    public void changeTitle(String newTitle) {
+    public int changeTitle(String newTitle) {
         event.setTitle(newTitle);
         eventTitle.setText(newTitle);
+        return server.updateEventTitle(event);
     }
 
     /**
@@ -248,7 +251,6 @@ public class EventPageCtrl {
         mainCtrl.showAddExpensePage(event);
     }
 
-
     /**
      * create the specific displayed expenses for a listview
      * @param expenses expenses from which to create the list view
@@ -269,6 +271,7 @@ public class EventPageCtrl {
                 stackPane.getChildren().addAll(new Text(), buttonBox);
                 editButton.setOnAction(event -> {
                     int index = getIndex();
+                    System.out.println(index);
                     Expense expense = expenses.get(index);
                     mainCtrl.handleEditExpense(expense, ev);
                 });
@@ -278,6 +281,7 @@ public class EventPageCtrl {
                     server.deleteExpense(expense.getId(), ev.getId());
                 });
             }
+
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -296,6 +300,7 @@ public class EventPageCtrl {
                 }
             }
         });
+
         ObservableList<String> items = FXCollections.observableArrayList();
         for (Expense expense : expenses) {
             String expenseString = toString(expense);
@@ -378,6 +383,13 @@ public class EventPageCtrl {
             }
         }
         return temp;
+    }
+
+    /**
+     *
+     */
+    public void changeTitle(){
+        mainCtrl.showEditTitle(this);
     }
 
     /**
