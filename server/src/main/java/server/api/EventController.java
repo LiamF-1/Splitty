@@ -1,11 +1,8 @@
 package server.api;
 
 import commons.Event;
-import commons.Participant;
-import commons.Tag;
 import commons.WebsocketActions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
