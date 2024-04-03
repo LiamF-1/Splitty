@@ -292,7 +292,6 @@ public class EventPageCtrl {
             private final Button removeButton = new Button("\u274C");
             private final HBox buttonBox = new HBox();
             private final StackPane stackPane = new StackPane();
-
             {
                 stackPane.setAlignment(Pos.CENTER_LEFT);
                 buttonBox.setAlignment(Pos.CENTER_RIGHT);
@@ -310,7 +309,6 @@ public class EventPageCtrl {
                     server.deleteExpense(expense.getId(), ev.getId());
                 });
             }
-
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -329,7 +327,6 @@ public class EventPageCtrl {
                 }
             }
         });
-
         ObservableList<String> items = FXCollections.observableArrayList();
         for (Expense expense : expenses) {
             String expenseString = toString(expense);
