@@ -402,7 +402,7 @@ public class AddExpenseCtrl {
     }
 
     /**
-     * show corresponding tags for expense
+     * show the corresponding tags for expense
      *
      * @param ev the current event
      */
