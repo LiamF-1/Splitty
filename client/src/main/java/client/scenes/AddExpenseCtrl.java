@@ -95,6 +95,13 @@ public class AddExpenseCtrl {
      * @param exp   the expense for which the page is displayed
      */
     public void displayAddExpensePage(Event event, Expense exp) {
+        date.setDayCellFactory(param -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(empty || date.compareTo(LocalDate.now()) > 0 );
+            }
+        });
         colorPicker.setOnAction(e -> {
             selectedColor = colorPicker.getValue();
         });
@@ -345,7 +352,7 @@ public class AddExpenseCtrl {
                 String selectedParticipantName = expenseAuthor.getValue();
                 Participant selectedParticipant = ev.getParticipants().stream()
                         .filter(participant -> participant.getName().
-                        equals(selectedParticipantName))
+                                equals(selectedParticipantName))
                         .findFirst().orElse(null);
                 if (selectedParticipant != null) {
                     String expCurrency = currency.getValue();
