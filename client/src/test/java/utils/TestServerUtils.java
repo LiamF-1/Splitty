@@ -148,7 +148,9 @@ public class TestServerUtils implements ServerUtils {
         clone.setEventID(event.getId());
         event.addParticipant(clone);
         event.setLastActivity(new Date());
-        websocket.simulateAction(WebsocketActions.ADD_PARTICIPANT, clone);
+        if(clone != null){
+            websocket.simulateAction(WebsocketActions.ADD_PARTICIPANT, clone);
+        }
         lastChange = new Date();
         statuses.add(204);
         return 204;
@@ -528,7 +530,6 @@ public class TestServerUtils implements ServerUtils {
         statuses.add(200);
         return 200;
     }
-
     /**
      * Has an up to 5% variance for different dates
      * @return mocked version of exchange rate api

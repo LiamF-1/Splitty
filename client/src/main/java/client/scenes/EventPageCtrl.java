@@ -218,10 +218,6 @@ public class EventPageCtrl {
                 this::updateExpenses,
                 this::updateExpenses
         );
-        websocket.on(WebsocketActions.ADD_TRANSACTION,
-                transaction -> event.addTransaction((Transaction) transaction));
-        websocket.on(WebsocketActions.REMOVE_TRANSACTION,
-                id -> event.getTransactions().removeIf(t -> t.getId() == (Long) id));
     }
 
 
@@ -368,7 +364,6 @@ public class EventPageCtrl {
                 stackPane.getChildren().addAll(new Text(), buttonBox);
                 editButton.setOnAction(event -> {
                     int index = getIndex();
-                    System.out.println(index);
                     Expense expense = expenses.get(index);
                     mainCtrl.handleEditExpense(expense, ev);
                 });
@@ -546,6 +541,7 @@ public class EventPageCtrl {
         copiedToClipboardMsg.setOpacity(1.0);
         ft.play();
     }
+
     /**
      * Show the openDebts page with the current event
      */

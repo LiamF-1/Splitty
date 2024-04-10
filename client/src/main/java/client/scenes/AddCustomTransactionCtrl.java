@@ -129,6 +129,7 @@ public class AddCustomTransactionCtrl {
 
     /**
      * @return true iff all fields are valid
+     * TODO make this method smaller
      */
     private boolean checkFields() {
         if(chooseCurrency.getValue() == null) {

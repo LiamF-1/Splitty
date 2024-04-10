@@ -15,8 +15,8 @@
  */
 package client;
 
-import client.MockClass.MainCtrlInterface;
 import client.scenes.*;
+import client.MockClass.MainCtrlInterface;
 import client.utils.*;
 import client.utils.currency.CurrencyConverter;
 import client.utils.currency.FileManager;

@@ -3,6 +3,7 @@ package client.scenes;
 import client.MyFXML;
 import client.utils.LanguageConf;
 import client.utils.UserConfig;
+import client.utils.currency.CurrencyConverter;
 import commons.Event;
 import commons.Participant;
 import commons.Transaction;
@@ -45,6 +46,7 @@ class AddCustomTransactionCtrlTest {
     public void start(Stage stage) throws IOException {
         this.stage = stage;
         websocket = new TestWebsocket();
+
         server = new TestServerUtils(websocket);
         fileManager = new FileManagerMock();
         UserConfig userConfig = new UserConfig(new TestIO("""
@@ -52,7 +54,7 @@ class AddCustomTransactionCtrlTest {
                 lang=en
                 recentEventCodes="""));
         LanguageConf languageConf = new LanguageConf(userConfig);
-        MainCtrl mainCtrl = new MainCtrl(websocket, languageConf, userConfig);
+        MainCtrl mainCtrl = new MainCtrl(websocket, languageConf, userConfig, null);
 
         var addCustomTransactionLoader = new FXMLLoader(MyFXML.class.getClassLoader()
                 .getResource("client/scenes/AddCustomTransaction.fxml"),

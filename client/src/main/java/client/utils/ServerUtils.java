@@ -1,10 +1,6 @@
 package client.utils;
 
-import commons.Event;
-import commons.Expense;
-import commons.Participant;
-import commons.Transaction;
-import commons.Tag;
+import commons.*;
 
 import java.net.ConnectException;
 import java.util.List;

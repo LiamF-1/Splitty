@@ -17,24 +17,31 @@ package client.scenes;
 
 import client.MockClass.MainCtrlInterface;
 import client.utils.LanguageConf;
+import client.utils.ServerUtils;
 import client.utils.UserConfig;
 import client.utils.Websocket;
+import client.utils.currency.CurrencyConverter;
 import com.google.inject.Inject;
 import commons.Event;
 import commons.Expense;
+import commons.Participant;
+import commons.Transaction;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.net.ConnectException;
 import java.time.ZoneId;
 import java.util.List;
 
 public class MainCtrl implements MainCtrlInterface{
 
     private final UserConfig userConfig;
+    private final CurrencyConverter converter;
     private final LanguageConf languageConf;
     private final Websocket websocket;
 
@@ -47,6 +54,7 @@ public class MainCtrl implements MainCtrlInterface{
 
     private AdminOverviewCtrl adminOverviewCtrl;
     private Scene adminOverview;
+
     private EditParticipantsCtrl editParticipantsCtrl;
     private Scene editParticipants;
 
@@ -64,6 +72,7 @@ public class MainCtrl implements MainCtrlInterface{
 
     private AddTagCtrl addTagCtrl;
     private Scene addTag;
+
     private AddCustomTransactionCtrl addCustomTransactionCtrl;
     private Scene addCustomTransaction;
 
@@ -72,13 +81,15 @@ public class MainCtrl implements MainCtrlInterface{
      * @param websocket the websocket instance
      * @param languageConf the language config
      * @param userConfig the user configuration
+     * @param converter currency converter
      */
     @Inject
     public MainCtrl(Websocket websocket, LanguageConf languageConf,
-                    UserConfig userConfig) {
+                    UserConfig userConfig, CurrencyConverter converter) {
         this.websocket = websocket;
         this.languageConf = languageConf;
         this.userConfig = userConfig;
+        this.converter = converter;
     }
 
     /**
@@ -127,6 +138,7 @@ public class MainCtrl implements MainCtrlInterface{
 
         showStartScreen();
         primaryStage.show();
+
     }
 
     /**
@@ -311,6 +323,15 @@ public class MainCtrl implements MainCtrlInterface{
         primaryStage.setScene(openDebtsPage);
     }
 
+
+    /**
+     * expands/contracts the openDebtsListItem according to its status.
+     * @param item item that was clicked on
+     */
+    public void resizeOpenDebtItem(Node item){
+        openDebtsPageCtrl.resizeOpenDebtItem(item);
+    }
+
     /**
      * Display a window for adding a custom transaction
      * @param event event to load
@@ -324,5 +345,33 @@ public class MainCtrl implements MainCtrlInterface{
         stage.setResizable(false);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.show();
+    }
+
+    /**
+     *
+     */
+
+    /**
+     * Settles the debt displayed in the item
+     * @param receiver receiver of the transaction
+     * @param giver giver of the transaction
+     * @param amount amount given in the transaction
+     * @param event event the transaction is bound to
+     * @param server server to update transactions in.
+     */
+    public void settleDebt(Participant giver, Participant receiver,
+                           double amount,
+                           Event event,
+                           ServerUtils server){
+        Transaction transaction = new Transaction(giver, receiver, amount);
+        int status;
+        try {
+            status = server.addTransaction(event.getId(), transaction);
+        } catch (ConnectException e) { //TODO add an error Popup
+            throw new RuntimeException(e);
+        }
+        if (status / 100 != 2) {
+            System.out.println("server error: " + status);
+        }
     }
 }
